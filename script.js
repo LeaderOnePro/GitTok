@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('获取 GitHub Trending 数据时出错:', error);
-            feedContainer.innerHTML = `<div class="gittok-item"><p>加载失败: ${error.message}</p><p>请稍后重试，或检查 API 是否可用。</p></div>`;
+            feedContainer.innerHTML = `<div class="gittok-item"><p>加载 GitHub Trending 数据失败: ${error.message}</p><p>无法连接到 API: ${trendingApiUrl}</p><p>请检查你的网络连接，或尝试直接访问 API 地址确认其是否可用。</p></div>`;
         }
     }
 
