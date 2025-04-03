@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const feedContainer = document.querySelector('.gittok-feed');
-    const trendingApiUrl = 'https://github-trending-api.waningflow.com/repositories'; // 非官方 API
+    const trendingApiUrl = 'http://localhost:3000/api/trending'; // 本地后端代理 API
 
     async function fetchTrendingRepos() {
         // 清除初始消息
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('获取 GitHub Trending 数据时出错:', error);
-            feedContainer.innerHTML = `<div class="gittok-item"><p>加载 GitHub Trending 数据失败: ${error.message}</p><p>无法连接到 API: ${trendingApiUrl}</p><p>请检查你的网络连接，或尝试直接访问 API 地址确认其是否可用。</p></div>`;
+            feedContainer.innerHTML = `<div class="gittok-item"><p>加载 GitHub Trending 数据失败: ${error.message}</p><p>无法连接到本地后端代理: ${trendingApiUrl}</p><p>请确保后端服务器正在运行，并检查控制台输出。</p></div>`;
         }
     }
 
