@@ -1,0 +1,58 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* 隐藏默认滚动条 */
+    font-family: sans-serif;
+    background-color: #000; /* TikTok 风格的黑色背景 */
+    color: #fff; /* 白色文字 */
+}
+
+.gittok-feed {
+    height: 100vh; /* 占满整个视口高度 */
+    width: 100vw; /* 占满整个视口宽度 */
+    overflow-y: scroll; /* 允许垂直滚动 */
+    scroll-snap-type: y mandatory; /* 强制滚动捕捉到项目 */
+    -webkit-overflow-scrolling: touch; /* 在移动设备上启用平滑滚动 */
+}
+
+.gittok-item {
+    height: 100vh; /* 每个项目占满整个视口高度 */
+    width: 100vw; /* 每个项目占满整个视口宽度 */
+    scroll-snap-align: start; /* 滚动时对齐到项目顶部 */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 垂直居中内容 */
+    align-items: center; /* 水平居中内容 */
+    padding: 20px;
+    box-sizing: border-box; /* padding 不会增加元素尺寸 */
+    border-bottom: 1px solid #333; /* 项目之间的分隔线 */
+    position: relative; /* 用于定位项目内的元素 */
+}
+
+.gittok-item h2 {
+    margin-top: 0;
+    color: #eee;
+}
+
+.gittok-item p {
+    color: #ccc;
+    text-align: center;
+    max-width: 80%;
+}
+
+.gittok-item a {
+    color: #1e90ff; /* 蓝色链接 */
+    text-decoration: none;
+}
+
+.gittok-item a:hover {
+    text-decoration: underline;
+}
+
+/* 简单的加载指示器样式 */
+.loading {
+    text-align: center;
+    padding: 50px;
+    font-size: 1.2em;
+}
