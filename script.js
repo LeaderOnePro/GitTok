@@ -106,6 +106,46 @@ document.addEventListener('DOMContentLoaded', () => {
             infoRight.appendChild(noDescriptionP);
         }
 
+        // 6. 分享按钮 (添加到 itemDiv 以便绝对定位)
+        const shareButton = document.createElement('button');
+        shareButton.classList.add('share-button');
+        shareButton.textContent = '分享'; // 或者使用图标
+        itemDiv.appendChild(shareButton);
+
+        // 分享事件处理
+        shareButton.addEventListener('click', async () => {
+            const shareUrl = 'https://github.com/LeaderOnePro/GitTok';
+            const shareTitle = 'GitTok - 像刷 TikTok 一样刷 GitHub Trending';
+            const shareText = `快来看看这个项目 GitTok，用 TikTok 的方式浏览 GitHub Trending！ ${shareUrl}`;
+
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: shareTitle,
+                        text: shareText,
+                        url: shareUrl,
+                    });
+                    console.log('内容成功分享');
+                } catch (err) {
+                    // 如果用户取消分享，通常会进入这里，可以忽略
+                    if (err.name !== 'AbortError') {
+                        console.error('分享时出错:', err);
+                        alert(`分享失败: ${err.message}`);
+                    }
+                }
+            } else {
+                // 回退到复制链接
+                try {
+                    await navigator.clipboard.writeText(shareUrl);
+                    alert('链接已复制到剪贴板！');
+                } catch (err) {
+                    console.error('无法复制链接:', err);
+                    alert('复制链接失败，请手动复制:\n' + shareUrl);
+                }
+            }
+        });
+
+
         return itemDiv;
     }
 

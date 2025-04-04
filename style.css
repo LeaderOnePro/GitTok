@@ -130,3 +130,29 @@ body, html {
     padding: 50px;
     font-size: 1.2em;
 }
+
+/* 6. Share Button Styling */
+.share-button {
+    position: absolute;
+    top: 20px; /* Adjust spacing from top */
+    right: 20px; /* Adjust spacing from right */
+    z-index: 4; /* Ensure it's above content area */
+    padding: 8px 15px;
+    background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white */
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9em;
+    backdrop-filter: blur(5px); /* Optional: slight blur on the button itself */
+    -webkit-backdrop-filter: blur(5px);
+    transition: background-color 0.2s ease;
+}
+
+.share-button:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+.share-button:active {
+    background-color: rgba(255, 255, 255, 0.6);
+}
