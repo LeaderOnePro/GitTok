@@ -17,37 +17,111 @@ body, html {
 }
 
 .gittok-item {
-    height: 100vh; /* 每个项目占满整个视口高度 */
-    width: 100vw; /* 每个项目占满整个视口宽度 */
-    scroll-snap-align: start; /* 滚动时对齐到项目顶部 */
+    height: 100vh;
+    width: 100vw;
+    scroll-snap-align: start;
+    position: relative; /* Crucial for absolute positioning of children */
+    overflow: hidden; /* Hide parts of the background image that overflow */
+    display: flex; /* Use flexbox for overall structure (optional, could use grid too) */
+    justify-content: center; /* Center the content area horizontally */
+    align-items: center; /* Center the content area vertically */
+    box-sizing: border-box;
+    border-bottom: 1px solid #333; /* Keep the separator */
+}
+
+/* 1. Background Image */
+.background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover; /* Cover the entire area */
+    background-position: center center; /* Center the image */
+    z-index: 1; /* Behind overlays and content */
+    /* Optional: Add a slight blur to the main image */
+    /* filter: blur(2px); */
+}
+
+/* 2. Frosted Glass Overlays */
+.overlay-left, .overlay-right {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 25%; /* Adjust width as needed */
+    background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent black */
+    backdrop-filter: blur(15px); /* The frosted glass effect */
+    -webkit-backdrop-filter: blur(15px); /* Safari support */
+    z-index: 2; /* Above background, below content */
+}
+
+.overlay-left {
+    left: 0;
+}
+
+.overlay-right {
+    right: 0;
+}
+
+/* 3. Content Area Container */
+.content-area {
+    position: relative; /* To position children absolutely relative to this */
+    z-index: 3; /* Above overlays */
+    width: 50%; /* Takes the space between overlays */
+    height: 100%;
     display: flex;
-    flex-direction: column;
-    justify-content: center; /* 垂直居中内容 */
-    align-items: center; /* 水平居中内容 */
-    padding: 20px;
-    box-sizing: border-box; /* padding 不会增加元素尺寸 */
-    border-bottom: 1px solid #333; /* 项目之间的分隔线 */
-    position: relative; /* 用于定位项目内的元素 */
+    flex-direction: column; /* Stack info blocks vertically */
+    justify-content: flex-end; /* Align info blocks to the bottom */
+    padding: 20px; /* Add some padding */
+    box-sizing: border-box;
+    color: #fff; /* Ensure text is white */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Add shadow for readability */
 }
 
-.gittok-item h2 {
-    margin-top: 0;
-    color: #eee;
+/* 4. Info Blocks Positioning */
+.info-left {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    max-width: 60%; /* Prevent overlapping with right info */
 }
 
-.gittok-item p {
-    color: #ccc;
-    text-align: center;
-    max-width: 80%;
+.info-right {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    max-width: 35%; /* Adjust as needed */
+    text-align: right;
 }
 
-.gittok-item a {
-    color: #1e90ff; /* 蓝色链接 */
+/* 5. Text Styling within Info Blocks */
+.info-left h2, .info-left p, .info-right p {
+    margin: 5px 0; /* Adjust spacing */
+    color: #fff; /* Ensure white text */
+}
+
+.info-left h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+}
+
+.info-left a {
+    color: #fff; /* White links */
     text-decoration: none;
+    font-weight: bold;
 }
 
-.gittok-item a:hover {
+.info-left a:hover {
     text-decoration: underline;
+}
+
+.info-left p {
+    font-size: 0.9em;
+}
+
+.info-right p {
+    font-size: 0.9em;
+    color: #eee; /* Slightly dimmer description */
 }
 
 /* 简单的加载指示器样式 */

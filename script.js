@@ -32,48 +32,81 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function createRepoElement(repo) {
-        const div = document.createElement('div');
-        div.classList.add('gittok-item');
+        const itemDiv = document.createElement('div');
+        itemDiv.classList.add('gittok-item');
+
+        // 1. 背景图片 (使用作者头像)
+        const bgImage = document.createElement('div');
+        bgImage.classList.add('background-image');
+        // 使用 GitHub 头像 URL，可以指定尺寸 ?s=400
+        bgImage.style.backgroundImage = `url(${repo.avatar}?s=400)`;
+        itemDiv.appendChild(bgImage);
+
+        // 2. 毛玻璃效果覆盖层 (左右) - CSS 中实现效果
+        const overlayLeft = document.createElement('div');
+        overlayLeft.classList.add('overlay-left');
+        itemDiv.appendChild(overlayLeft);
+
+        const overlayRight = document.createElement('div');
+        overlayRight.classList.add('overlay-right');
+        itemDiv.appendChild(overlayRight);
+
+        // 3. 内容区域容器
+        const contentArea = document.createElement('div');
+        contentArea.classList.add('content-area');
+        itemDiv.appendChild(contentArea);
+
+        // 4. 左下角信息
+        const infoLeft = document.createElement('div');
+        infoLeft.classList.add('info-left');
+        contentArea.appendChild(infoLeft);
 
         // 项目名称和链接
         const title = document.createElement('h2');
         const link = document.createElement('a');
         link.href = repo.url;
         link.textContent = repo.name;
-        link.target = '_blank'; // 在新标签页打开
+        link.target = '_blank';
         title.appendChild(link);
-        div.appendChild(title);
+        infoLeft.appendChild(title);
 
         // 作者
-        const author = document.createElement('p');
-        author.textContent = `作者: ${repo.author}`;
-        div.appendChild(author);
-
-        // 描述
-        if (repo.description) {
-            const description = document.createElement('p');
-            description.textContent = repo.description;
-            div.appendChild(description);
-        }
+        const authorP = document.createElement('p');
+        authorP.textContent = `作者: ${repo.author}`;
+        infoLeft.appendChild(authorP);
 
         // 语言和星星
-        const stats = document.createElement('p');
+        const statsP = document.createElement('p');
         let statsText = '';
         if (repo.language) {
             statsText += `语言: ${repo.language} | `;
         }
         statsText += `⭐ ${repo.stars} | Forks: ${repo.forks}`;
-        stats.textContent = statsText;
-        div.appendChild(stats);
+        statsP.textContent = statsText;
+        infoLeft.appendChild(statsP);
 
-         // 今日星星
-         const todayStars = document.createElement('p');
-         todayStars.textContent = `今日 Star: ${repo.currentPeriodStars}`;
-         todayStars.style.fontWeight = 'bold'; // 突出显示
-         div.appendChild(todayStars);
+        // 今日星星
+        const todayStarsP = document.createElement('p');
+        todayStarsP.textContent = `今日 Star: ${repo.currentPeriodStars}`;
+        todayStarsP.style.fontWeight = 'bold';
+        infoLeft.appendChild(todayStarsP);
 
+        // 5. 右下角描述
+        const infoRight = document.createElement('div');
+        infoRight.classList.add('info-right');
+        contentArea.appendChild(infoRight);
 
-        return div;
+        if (repo.description) {
+            const descriptionP = document.createElement('p');
+            descriptionP.textContent = repo.description;
+            infoRight.appendChild(descriptionP);
+        } else {
+            const noDescriptionP = document.createElement('p');
+            noDescriptionP.textContent = '暂无描述';
+            infoRight.appendChild(noDescriptionP);
+        }
+
+        return itemDiv;
     }
 
     // 页面加载时获取数据
