@@ -163,3 +163,53 @@ body, html {
     transform: translate(-50%, -50%);
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Add shadow to loading text */
 }
+
+/* 6. Responsive Design (Media Queries) */
+@media (max-width: 768px) {
+    .content-image {
+        width: 85%; /* Increase image width slightly on smaller screens */
+        max-width: 90%; /* Allow it to take more horizontal space */
+        aspect-ratio: unset; /* Allow image to take natural height based on width */
+        height: 50vh; /* Limit height to prevent excessive vertical space */
+        background-size: cover; /* Cover might be better than contain on mobile */
+    }
+
+    .info-left, .info-right {
+        bottom: 15px; /* Reduce bottom spacing */
+        max-width: 80%; /* Allow text to take more width */
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9); /* Stronger shadow */
+    }
+
+    .info-left {
+        left: 15px; /* Reduce left spacing */
+    }
+
+    .info-right {
+        right: 15px; /* Reduce right spacing */
+        max-width: 60%; /* Adjust max-width for description */
+        bottom: 60px; /* Move description up slightly to avoid overlap */
+    }
+
+     .info-left h2 {
+        font-size: 1.3em; /* Slightly smaller title */
+     }
+     .info-left p, .info-right p {
+        font-size: 0.85em; /* Smaller text */
+     }
+
+    .share-button {
+        top: 15px; /* Reduce top/right spacing */
+        right: 15px;
+        width: 30px; /* Slightly smaller button */
+        height: 30px;
+    }
+
+     .share-button svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .blurred-background {
+         filter: blur(20px) brightness(0.6); /* Slightly less blur, darker */
+    }
+}
