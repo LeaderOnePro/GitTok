@@ -1,0 +1,10 @@
+# Node.js dependencies in backend
+backend/node_modules/
+
+# Optional: Add other common ignores if needed
+# Logs
+# *.log
+# npm-debug.log*
+
+# Environment variables
+# .env
