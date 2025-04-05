@@ -35,39 +35,32 @@ document.addEventListener('DOMContentLoaded', () => {
         const itemDiv = document.createElement('div');
         itemDiv.classList.add('gittok-item');
 
-        // 1. 背景图片 (使用作者头像)
-        const bgImage = document.createElement('div');
-        bgImage.classList.add('background-image');
-        // 使用 GitHub 头像 URL，可以指定尺寸 ?s=400
-        bgImage.style.backgroundImage = `url(${repo.avatar}?s=400)`;
-        itemDiv.appendChild(bgImage);
+        // 0. 模糊背景层 (使用相同图片)
+        const blurredBg = document.createElement('div');
+        blurredBg.classList.add('blurred-background');
+        blurredBg.style.backgroundImage = `url(${repo.avatar}?s=600)`; // Use the same image URL
+        itemDiv.appendChild(blurredBg); // Add it first
 
-        // 2. 毛玻璃效果覆盖层 (左右) - CSS 中实现效果
-        const overlayLeft = document.createElement('div');
-        overlayLeft.classList.add('overlay-left');
-        itemDiv.appendChild(overlayLeft);
+        // 1. 主要内容图片 (居中显示，点击跳转)
+        const contentImage = document.createElement('div');
+        contentImage.classList.add('content-image'); // Renamed class for clarity
+        contentImage.style.backgroundImage = `url(${repo.avatar}?s=600)`;
+        contentImage.title = `点击查看 ${repo.name} 项目`;
+        itemDiv.appendChild(contentImage);
 
-        const overlayRight = document.createElement('div');
-        overlayRight.classList.add('overlay-right');
-        itemDiv.appendChild(overlayRight);
+        // 图片点击事件
+        contentImage.addEventListener('click', () => {
+            window.open(repo.url, '_blank');
+        });
 
-        // 3. 内容区域容器
-        const contentArea = document.createElement('div');
-        contentArea.classList.add('content-area');
-        itemDiv.appendChild(contentArea);
-
-        // 4. 左下角信息
+        // 2. 左下角信息
         const infoLeft = document.createElement('div');
         infoLeft.classList.add('info-left');
-        contentArea.appendChild(infoLeft);
+        itemDiv.appendChild(infoLeft); // 直接添加到 itemDiv
 
-        // 项目名称和链接
+        // 项目名称 (不再是链接)
         const title = document.createElement('h2');
-        const link = document.createElement('a');
-        link.href = repo.url;
-        link.textContent = repo.name;
-        link.target = '_blank';
-        title.appendChild(link);
+        title.textContent = repo.name;
         infoLeft.appendChild(title);
 
         // 作者
@@ -91,10 +84,10 @@ document.addEventListener('DOMContentLoaded', () => {
         todayStarsP.style.fontWeight = 'bold';
         infoLeft.appendChild(todayStarsP);
 
-        // 5. 右下角描述
+        // 3. 右下角描述
         const infoRight = document.createElement('div');
         infoRight.classList.add('info-right');
-        contentArea.appendChild(infoRight);
+        itemDiv.appendChild(infoRight); // 直接添加到 itemDiv
 
         if (repo.description) {
             const descriptionP = document.createElement('p');
@@ -106,10 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
             infoRight.appendChild(noDescriptionP);
         }
 
-        // 6. 分享按钮 (添加到 itemDiv 以便绝对定位)
+        // 4. 分享按钮 (保持不变)
         const shareButton = document.createElement('button');
         shareButton.classList.add('share-button');
-        // 使用 SVG 图标代替文字
         shareButton.innerHTML = `
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
               <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
@@ -117,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         itemDiv.appendChild(shareButton);
 
-        // 分享事件处理
+        // 分享事件处理 (保持不变)
         shareButton.addEventListener('click', async () => {
             const shareUrl = 'https://github.com/LeaderOnePro/GitTok';
             const shareTitle = 'GitTok - 像刷 TikTok 一样刷 GitHub Trending';
@@ -132,14 +124,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                     console.log('内容成功分享');
                 } catch (err) {
-                    // 如果用户取消分享，通常会进入这里，可以忽略
                     if (err.name !== 'AbortError') {
                         console.error('分享时出错:', err);
                         alert(`分享失败: ${err.message}`);
                     }
                 }
             } else {
-                // 回退到复制链接
                 try {
                     await navigator.clipboard.writeText(shareUrl);
                     alert('链接已复制到剪贴板！');
@@ -149,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-
 
         return itemDiv;
     }

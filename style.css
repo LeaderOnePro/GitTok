@@ -4,8 +4,8 @@ body, html {
     height: 100%;
     overflow: hidden; /* 隐藏默认滚动条 */
     font-family: sans-serif;
-    background-color: #000; /* TikTok 风格的黑色背景 */
-    color: #fff; /* 白色文字 */
+    /* background-color: #aaaaaa; /* Removed grey background */
+    color: #fff; /* Default text color back to white */
 }
 
 .gittok-feed {
@@ -21,138 +21,145 @@ body, html {
     width: 100vw;
     scroll-snap-align: start;
     position: relative; /* Crucial for absolute positioning of children */
-    overflow: hidden; /* Hide parts of the background image that overflow */
-    display: flex; /* Use flexbox for overall structure (optional, could use grid too) */
-    justify-content: center; /* Center the content area horizontally */
-    align-items: center; /* Center the content area vertically */
+    overflow: hidden; /* Prevent content overflow */
+    display: flex;
+    justify-content: center; /* Center the image horizontally */
+    align-items: center; /* Center the image vertically */
     box-sizing: border-box;
-    border-bottom: 1px solid #333; /* Keep the separator */
+    /* background-color: transparent; /* Ensure item itself has no background */
 }
 
-/* 1. Background Image */
-.background-image {
+/* 0. Blurred Background Layer */
+.blurred-background {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-size: cover; /* Cover the entire area */
-    background-position: center center; /* Center the image */
-    z-index: 1; /* Behind overlays and content */
-    /* Optional: Add a slight blur to the main image */
-    /* filter: blur(2px); */
+    background-size: cover;
+    background-position: center center;
+    filter: blur(25px) brightness(0.7); /* Adjust blur and brightness */
+    transform: scale(1.1); /* Slightly scale up to avoid edge artifacts */
+    z-index: 0; /* Behind everything */
 }
 
-/* 2. Frosted Glass Overlays */
-.overlay-left, .overlay-right {
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 25%; /* Adjust width as needed */
-    background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent black */
-    backdrop-filter: blur(15px); /* The frosted glass effect */
-    -webkit-backdrop-filter: blur(15px); /* Safari support */
-    z-index: 2; /* Above background, below content */
+/* 1. Content Image (Centered) */
+.content-image { /* Renamed from background-image */
+    position: relative; /* Needed for z-index stacking */
+    width: 60%;
+    max-width: 800px;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+    z-index: 1; /* Above blurred background */
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Slightly stronger shadow */
+    border-radius: 8px;
 }
 
-.overlay-left {
-    left: 0;
+.content-image:hover {
+    transform: scale(1.03);
 }
 
-.overlay-right {
-    right: 0;
-}
+/* Remove overlays and content-area */
 
-/* 3. Content Area Container */
-.content-area {
-    position: relative; /* To position children absolutely relative to this */
-    z-index: 3; /* Above overlays */
-    width: 50%; /* Takes the space between overlays */
-    height: 100%;
-    display: flex;
-    flex-direction: column; /* Stack info blocks vertically */
-    justify-content: flex-end; /* Align info blocks to the bottom */
-    padding: 20px; /* Add some padding */
-    box-sizing: border-box;
-    color: #fff; /* Ensure text is white */
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Add shadow for readability */
-}
-
-/* 4. Info Blocks Positioning */
+/* 2. Info Blocks Positioning (Directly within .gittok-item) */
 .info-left {
     position: absolute;
-    bottom: 20px;
-    left: 20px;
-    max-width: 60%; /* Prevent overlapping with right info */
+    bottom: 30px; /* Adjust spacing */
+    left: 30px; /* Adjust spacing */
+    z-index: 2; /* Above content image */
+    max-width: 50%;
+    color: #fff; /* White text */
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); /* Stronger shadow for contrast */
 }
 
 .info-right {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
-    max-width: 35%; /* Adjust as needed */
+    bottom: 30px; /* Adjust spacing */
+    right: 30px; /* Adjust spacing */
+    z-index: 2; /* Above content image */
+    max-width: 40%;
     text-align: right;
+    color: #eee; /* Slightly off-white description */
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); /* Stronger shadow */
 }
 
-/* 5. Text Styling within Info Blocks */
+/* 3. Text Styling within Info Blocks */
 .info-left h2, .info-left p, .info-right p {
-    margin: 5px 0; /* Adjust spacing */
-    color: #fff; /* Ensure white text */
+    margin: 4px 0; /* Adjust spacing */
+    color: inherit; /* Inherit color from parent (.info-left/.info-right) */
 }
 
 .info-left h2 {
-    font-size: 1.5em;
-    margin-bottom: 10px;
-}
-
-.info-left a {
-    color: #fff; /* White links */
-    text-decoration: none;
+    font-size: 1.6em;
+    margin-bottom: 8px;
     font-weight: bold;
+    color: #fff; /* White title */
 }
 
-.info-left a:hover {
-    text-decoration: underline;
-}
+/* Remove .info-left a styling */
 
 .info-left p {
-    font-size: 0.9em;
+    font-size: 0.95em;
 }
 
 .info-right p {
-    font-size: 0.9em;
-    color: #eee; /* Slightly dimmer description */
+    font-size: 0.95em;
 }
 
-/* 简单的加载指示器样式 */
+/* 4. Share Button Styling */
+.share-button {
+    position: absolute;
+    top: 30px; /* Adjust spacing */
+    right: 30px; /* Adjust spacing */
+    z-index: 3; /* Above everything else */
+    padding: 5px 10px;
+    background-color: rgba(255, 255, 255, 0.15); /* Semi-transparent white */
+    color: #fff; /* White icon */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    backdrop-filter: blur(5px); /* Optional blur for the button */
+    -webkit-backdrop-filter: blur(5px);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.share-button svg {
+    width: 16px; /* Ensure SVG size is controlled */
+    height: 16px;
+}
+
+
+.share-button:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.share-button:active {
+    background-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+}
+
+
+/* 5. Loading Indicator Styling */
 .loading {
     text-align: center;
     padding: 50px;
     font-size: 1.2em;
-}
-
-/* 6. Share Button Styling */
-.share-button {
+    color: #fff; /* White loading text */
+    width: 100%;
     position: absolute;
-    top: 20px; /* Adjust spacing from top */
-    right: 20px; /* Adjust spacing from right */
-    z-index: 4; /* Ensure it's above content area */
-    padding: 8px 15px;
-    background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white */
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    backdrop-filter: blur(5px); /* Optional: slight blur on the button itself */
-    -webkit-backdrop-filter: blur(5px);
-    transition: background-color 0.2s ease;
-}
-
-.share-button:hover {
-    background-color: rgba(255, 255, 255, 0.4);
-}
-
-.share-button:active {
-    background-color: rgba(255, 255, 255, 0.6);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7); /* Add shadow to loading text */
 }
