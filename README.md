@@ -6,7 +6,7 @@
 
 GitTok 提供了一种全新的、沉浸式的方式来浏览 GitHub 上的热门项目。厌倦了传统的列表视图？试试 GitTok，享受全屏、自动播放（未来功能）的 GitHub Trending 体验！
 
-![GitTok Screenshot](placeholder.png)  <!-- 稍后可以替换为真实的截图 -->
+![GitTok Screenshot](screenshot.png)  <!-- 稍后可以替换为真实的截图 -->
 
 ## ✨ 特性
 
