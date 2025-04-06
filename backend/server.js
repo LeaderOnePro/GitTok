@@ -4,7 +4,7 @@ import fetch from 'node-fetch'; // 使用 node-fetch v3+ 需要 import
 import * as cheerio from 'cheerio'; // 使用 cheerio v1+ 需要 import * as
 
 const app = express();
-const port = 3000; // 服务器监听的端口
+const port = process.env.PORT || 3000; // 使用 Render 提供的端口或回退到 3000
 
 // 允许跨域请求 (CORS) - 简单设置，允许所有来源
 // 在生产环境中，应配置更严格的 CORS 策略
@@ -101,6 +101,7 @@ app.get('/api/trending', async (req, res) => {
 });
 
 // 启动服务器
+// 注意：Render 通常希望监听 0.0.0.0，但 Express 默认就是这样，所以不需要显式指定
 app.listen(port, () => {
-    console.log(`GitTok backend server listening at http://localhost:${port}`);
+    console.log(`GitTok backend server listening on port ${port}`);
 });
