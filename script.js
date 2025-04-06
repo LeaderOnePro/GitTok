@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const feedContainer = document.querySelector('.gittok-feed');
-    const trendingApiUrl = 'http://localhost:3000/api/trending'; // 本地后端代理 API
+    const trendingApiUrl = 'https://gittok-mw6qj1pk3-leaderonepros-projects.vercel.app/';
+    // const trendingApiUrl = 'http://localhost:3000/api/trending'; // 本地后端代理 API
 
     async function fetchTrendingRepos() {
         // 清除初始消息
