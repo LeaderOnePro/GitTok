@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const feedContainer = document.querySelector('.gittok-feed');
-    const trendingApiUrl = 'https://gittok-mw6qj1pk3-leaderonepros-projects.vercel.app/';
-    // const trendingApiUrl = 'http://localhost:3000/api/trending'; // 本地后端代理 API
+    const trendingApiUrl = '/api/trending'; // Relative path for Vercel Serverless Function
+    // const trendingApiUrl = 'http://localhost:3000/api/trending'; // For local backend testing
 
     async function fetchTrendingRepos() {
         // 清除初始消息
@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('获取 GitHub Trending 数据时出错:', error);
-            feedContainer.innerHTML = `<div class="gittok-item"><p>加载 GitHub Trending 数据失败: ${error.message}</p><p>无法连接到本地后端代理: ${trendingApiUrl}</p><p>请确保后端服务器正在运行，并检查控制台输出。</p></div>`;
+            feedContainer.innerHTML = `<div class="gittok-item"><p>加载 GitHub Trending 数据失败: ${error.message}</p><p>无法连接到 API: ${trendingApiUrl}</p><p>请检查网络连接或 API 状态。</p></div>`;
         }
     }
 

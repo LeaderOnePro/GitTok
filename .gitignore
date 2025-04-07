@@ -1,4 +1,7 @@
-# Node.js dependencies in backend
+# Root Node.js dependencies (for Vercel build)
+/node_modules/
+
+# Node.js dependencies in backend (if still needed locally)
 backend/node_modules/
 
 # Optional: Add other common ignores if needed

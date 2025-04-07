@@ -1,0 +1,11 @@
+{
+  "name": "gittok",
+  "version": "1.0.0",
+  "description": "Browse GitHub Trending like TikTok",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "cheerio": "^1.0.0"
+  }
+}
