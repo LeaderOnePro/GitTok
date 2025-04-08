@@ -6,7 +6,7 @@
 
 GitTok 提供了一种全新的、沉浸式的方式来浏览 GitHub 上的热门项目。厌倦了传统的列表视图？试试 GitTok，享受全屏、自动播放（未来功能）的 GitHub Trending 体验！
 
-![GitTok Screenshot](screenshot.png)  <!-- 稍后可以替换为真实的截图 -->
+![GitTok Screenshot](screenshot.png)
 
 ## ✨ 特性
 
@@ -14,13 +14,14 @@ GitTok 提供了一种全新的、沉浸式的方式来浏览 GitHub 上的热�
 *   **沉浸式体验**: 每个项目卡片都包含关键信息和作者头像背景。
 *   **毛玻璃效果**: 现代化的视觉效果，突出项目信息。
 *   **分享功能**: 轻松将 GitTok 项目分享给朋友或同事。
-*   **本地后端代理**: 稳定可靠地获取 GitHub Trending 数据。
+*   **Serverless API**: 使用 Vercel Serverless Function 稳定可靠地获取 GitHub Trending 数据。
 
 ## 🛠️ 技术栈
 
 *   **前端**: HTML, CSS, JavaScript (无框架)
-*   **后端 (代理)**: Node.js, Express, Cheerio (用于抓取), node-fetch
-*   **数据源**: GitHub Trending 页面 (通过后端代理抓取)
+*   **后端 API**: Vercel Serverless Function (Node.js runtime), node-fetch, Cheerio
+*   **数据源**: GitHub Trending 页面 (通过 Serverless Function 抓取)
+*   **部署平台**: Vercel
 
 ## 🚀 如何运行
 
@@ -30,18 +31,26 @@ GitTok 提供了一种全新的、沉浸式的方式来浏览 GitHub 上的热�
     cd GitTok
     ```
 
-2.  **设置后端代理**:
+2.  **安装依赖**:
+    Vercel 会在部署时自动安装根 `package.json` 中的依赖。如果想在本地运行或测试 Serverless Function，可以使用 Vercel CLI:
     ```bash
-    cd backend
-    npm install  # 安装后端依赖
-    node server.js # 启动后端代理服务器 (需要保持运行)
+    npm install -g vercel # 安装 Vercel CLI (如果尚未安装)
+    npm install           # 安装项目依赖
+    vercel dev            # 启动本地开发服务器 (会运行前端和 Serverless Function)
     ```
-    服务器将监听在 `http://localhost:3000`。
+    然后访问 `http://localhost:3000` (或 Vercel CLI 指定的其他端口)。
 
-3.  **打开前端**:
-    在你的浏览器中直接打开项目根目录下的 `index.html` 文件。
+3.  **直接打开前端 (无本地 API)**:
+    如果只想查看前端界面（不调用 API），可以直接在浏览器中打开项目根目录下的 `index.html` 文件。
 
-    *确保后端服务器正在运行，否则前端无法加载数据。*
+## 部署
+
+本项目已配置为可以轻松部署到 [Vercel](https://vercel.com/)。
+
+1.  确保你的代码已推送到 GitHub 仓库。
+2.  在 Vercel 上导入你的 GitHub 仓库。
+3.  Vercel 会自动识别项目结构（静态文件 + `api` 目录下的 Serverless Functions）并进行部署。
+4.  部署完成后，你将获得一个公开的 URL。
 
 ## 📝 未来计划
 
@@ -49,7 +58,7 @@ GitTok 提供了一种全新的、沉浸式的方式来浏览 GitHub 上的热�
 *   [ ] **筛选器**: 按语言、日期范围等筛选 Trending 项目。
 *   [ ] **用户偏好设置**: 保存用户喜欢的语言或主题。
 *   [ ] **更丰富的项目信息**: 尝试提取贡献者、更详细的活动数据等。
-*   [ ] **部署**: 将应用部署到网络上，方便公开访问。
+*   [x] **部署**: 已使用 Vercel 部署。
 *   [ ] **PWA 支持**: 使其成为可安装的渐进式 Web 应用。
 
 ## 🤝 贡献
