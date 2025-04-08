@@ -2,7 +2,8 @@ body, html {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden; /* 隐藏默认滚动条 */
+    overflow-y: hidden; /* Hide vertical scrollbar on body/html */
+    overflow-x: hidden; /* Hide horizontal scrollbar on body/html */
     font-family: sans-serif;
     /* background-color: #aaaaaa; /* Removed grey background */
     color: #fff; /* Default text color back to white */
@@ -24,7 +25,7 @@ body, html {
     overflow: hidden; /* Prevent content overflow */
     display: flex;
     justify-content: center; /* Center the image horizontally */
-    align-items: center; /* Center the image vertically */
+    align-items: center; /* Keep vertical centering for the flex container */
     box-sizing: border-box;
     /* background-color: transparent; /* Ensure item itself has no background */
 }
@@ -44,8 +45,8 @@ body, html {
 }
 
 /* 1. Content Image (Centered) */
-.content-image { /* Renamed from background-image */
-    position: relative; /* Needed for z-index stacking */
+.content-image {
+    position: relative;
     width: 60%;
     max-width: 800px;
     height: auto;
@@ -53,11 +54,12 @@ body, html {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center center;
-    z-index: 1; /* Above blurred background */
+    z-index: 1;
     cursor: pointer;
     transition: transform 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Slightly stronger shadow */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     border-radius: 8px;
+    margin-top: -5vh; /* Move image slightly up from true center */
 }
 
 .content-image:hover {
@@ -170,24 +172,24 @@ body, html {
         width: 85%; /* Increase image width slightly on smaller screens */
         max-width: 90%; /* Allow it to take more horizontal space */
         aspect-ratio: unset; /* Allow image to take natural height based on width */
-        height: 50vh; /* Limit height to prevent excessive vertical space */
+        height: 45vh; /* Further reduce image height on mobile */
         background-size: cover; /* Cover might be better than contain on mobile */
     }
 
     .info-left, .info-right {
-        bottom: 15px; /* Reduce bottom spacing */
-        max-width: 80%; /* Allow text to take more width */
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9); /* Stronger shadow */
+        bottom: 10px; /* Further reduce bottom spacing */
+        max-width: 85%; /* Allow text to take slightly more width */
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
     }
 
     .info-left {
-        left: 15px; /* Reduce left spacing */
+        left: 10px; /* Further reduce side spacing */
     }
 
     .info-right {
-        right: 15px; /* Reduce right spacing */
-        max-width: 60%; /* Adjust max-width for description */
-        bottom: 60px; /* Move description up slightly to avoid overlap */
+        right: 10px; /* Further reduce side spacing */
+        max-width: 70%; /* Adjust max-width for description */
+        bottom: 50px; /* Adjust description position */
     }
 
      .info-left h2 {
