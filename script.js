@@ -15,20 +15,22 @@ document.addEventListener('DOMContentLoaded', () => {
             const repos = await response.json();
 
             // 清除加载指示器
-            feedContainer.innerHTML = '';
+            feedContainer.innerHTML = ''; // Clear loading indicator
 
             if (repos && repos.length > 0) {
                 repos.forEach(repo => {
                     const item = createRepoElement(repo);
                     feedContainer.appendChild(item);
                 });
+                // Setup Intersection Observer after items are added
+                setupSummaryObserver();
             } else {
                 feedContainer.innerHTML = '<div class="gittok-item"><p>未能加载 Trending 项目，或者今天没有项目。</p></div>';
             }
 
         } catch (error) {
             console.error('获取 GitHub Trending 数据时出错:', error);
-            feedContainer.innerHTML = `<div class="gittok-item"><p>加载 GitHub Trending 数据失败: ${error.message}</p><p>无法连接到 API: ${trendingApiUrl}</p><p>请检查网络连接或 API 状态。</p></div>`;
+            feedContainer.innerHTML = `<div class="gittok-item error-message"><p>加载 GitHub Trending 数据失败: ${error.message}</p><p>无法连接到 API: ${trendingApiUrl}</p><p>请检查网络连接或 API 状态。</p></div>`;
         }
     }
 
@@ -85,20 +87,26 @@ document.addEventListener('DOMContentLoaded', () => {
         todayStarsP.style.fontWeight = 'bold';
         infoLeft.appendChild(todayStarsP);
 
-        // 3. 右下角描述
+        // 3. 右下角信息 (描述 + AI 总结占位符)
         const infoRight = document.createElement('div');
         infoRight.classList.add('info-right');
-        itemDiv.appendChild(infoRight); // 直接添加到 itemDiv
+        itemDiv.appendChild(infoRight);
 
-        if (repo.description) {
-            const descriptionP = document.createElement('p');
-            descriptionP.textContent = repo.description;
-            infoRight.appendChild(descriptionP);
-        } else {
-            const noDescriptionP = document.createElement('p');
-            noDescriptionP.textContent = '暂无描述';
-            infoRight.appendChild(noDescriptionP);
-        }
+        // Description
+        const descriptionP = document.createElement('p');
+        descriptionP.classList.add('repo-description');
+        descriptionP.textContent = repo.description || '暂无描述';
+        infoRight.appendChild(descriptionP);
+
+        // AI Summary Placeholder
+        const summaryDiv = document.createElement('div');
+        summaryDiv.classList.add('ai-summary');
+        summaryDiv.innerHTML = '<p><i>AI 总结加载中...</i></p>'; // Initial placeholder text
+        infoRight.appendChild(summaryDiv);
+
+        // Store repo info on the item for the observer
+        itemDiv.dataset.author = repo.author;
+        itemDiv.dataset.repo = repo.name;
 
         // 4. 分享按钮 (保持不变)
         const shareButton = document.createElement('button');
@@ -144,6 +152,69 @@ document.addEventListener('DOMContentLoaded', () => {
         return itemDiv;
     }
 
-    // 页面加载时获取数据
+    // --- Intersection Observer for Lazy Loading Summaries ---
+    let observer;
+
+    function setupSummaryObserver() {
+        const options = {
+            root: feedContainer, // Observe within the feed container
+            rootMargin: '0px 0px 200px 0px', // Load summary when item is 200px from bottom edge
+            threshold: 0.01 // Trigger when even a small part is visible
+        };
+
+        observer = new IntersectionObserver(handleIntersection, options);
+
+        const items = feedContainer.querySelectorAll('.gittok-item:not(.summary-loaded):not(.summary-loading)');
+        items.forEach(item => observer.observe(item));
+    }
+
+    async function handleIntersection(entries, observer) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const item = entry.target;
+                // Check if already loading or loaded
+                if (!item.classList.contains('summary-loading') && !item.classList.contains('summary-loaded')) {
+                    const author = item.dataset.author;
+                    const repo = item.dataset.repo;
+                    if (author && repo) {
+                        item.classList.add('summary-loading');
+                        fetchAndDisplaySummary(item, author, repo);
+                    }
+                    // Stop observing this item once loading starts
+                    observer.unobserve(item);
+                }
+            }
+        });
+    }
+
+    async function fetchAndDisplaySummary(itemElement, author, repo) {
+        const summaryPlaceholder = itemElement.querySelector('.ai-summary');
+        const summarizeApiUrl = `/api/summarize?author=${encodeURIComponent(author)}&repo=${encodeURIComponent(repo)}`;
+
+        try {
+            console.log(`Fetching summary for ${author}/${repo}...`);
+            const response = await fetch(summarizeApiUrl);
+            itemElement.classList.remove('summary-loading'); // Remove loading class regardless of outcome
+
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`);
+            }
+            const data = await response.json();
+
+            if (data.summary) {
+                 summaryPlaceholder.innerHTML = `<p><strong>AI 总结:</strong> ${data.summary}</p>`;
+                 itemElement.classList.add('summary-loaded'); // Mark as loaded
+            } else {
+                 summaryPlaceholder.innerHTML = `<p><i>未能生成 AI 总结。</i></p>`;
+            }
+
+        } catch (error) {
+            console.error(`获取 AI 总结失败 (${author}/${repo}):`, error);
+            summaryPlaceholder.innerHTML = `<p><i>加载 AI 总结出错。</i></p>`;
+             itemElement.classList.remove('summary-loading'); // Ensure loading class is removed on error
+        }
+    }
+
+    // Initial data fetch on page load
     fetchTrendingRepos();
 });

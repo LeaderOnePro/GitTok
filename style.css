@@ -109,8 +109,30 @@ body, html {
     font-size: 0.95em;
 }
 
-.info-right p {
+.info-right p.repo-description { /* Target only the description paragraph */
     font-size: 0.95em;
+    margin-bottom: 8px; /* Add space below description */
+}
+
+.ai-summary {
+    margin-top: 8px; /* Add space above summary */
+    font-size: 0.85em; /* Smaller font for summary */
+    color: #ddd; /* Slightly different color for summary */
+    font-style: italic; /* Italicize summary text */
+    opacity: 0.9;
+}
+
+.ai-summary p {
+    margin: 0; /* Reset paragraph margin inside summary */
+    font-size: inherit; /* Inherit size */
+    color: inherit; /* Inherit color */
+    font-style: inherit; /* Inherit style */
+}
+
+.ai-summary strong { /* Style the "AI 总结:" part */
+    font-style: normal;
+    font-weight: bold;
+    color: #fff;
 }
 
 /* 4. Share Button Styling */
@@ -195,8 +217,12 @@ body, html {
      .info-left h2 {
         font-size: 1.3em; /* Slightly smaller title */
      }
-     .info-left p, .info-right p {
+     .info-left p, .info-right p.repo-description {
         font-size: 0.85em; /* Smaller text */
+     }
+     .ai-summary {
+         font-size: 0.75em; /* Even smaller summary on mobile */
+         margin-top: 5px;
      }
 
     .share-button {
