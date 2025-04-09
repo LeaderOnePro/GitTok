@@ -14,13 +14,17 @@ GitTok 提供了一种全新的、沉浸式的方式来浏览 GitHub 上的热�
 *   **沉浸式体验**: 每个项目卡片都包含关键信息和作者头像背景。
 *   **毛玻璃效果**: 现代化的视觉效果，突出项目信息。
 *   **分享功能**: 轻松将 GitTok 项目分享给朋友或同事。
-*   **Serverless API**: 使用 Vercel Serverless Function 稳定可靠地获取 GitHub Trending 数据。
+*   **Serverless API**: 使用 Vercel Serverless Functions 稳定可靠地获取 GitHub Trending 数据。
+*   **AI 总结**: 利用 AI (DeepSeek) 对项目 README 进行中文总结，快速了解项目核心。
 
 ## 🛠️ 技术栈
 
 *   **前端**: HTML, CSS, JavaScript (无框架)
-*   **后端 API**: Vercel Serverless Function (Node.js runtime), node-fetch, Cheerio
-*   **数据源**: GitHub Trending 页面 (通过 Serverless Function 抓取)
+*   **后端 API**: Vercel Serverless Functions (Node.js runtime)
+    *   `/api/trending`: 获取 Trending 列表 (使用 `node-fetch`, `cheerio`)
+    *   `/api/summarize`: 获取单个仓库的 AI 总结 (使用 `node-fetch`, `openai` SDK, DeepSeek API)
+*   **AI 服务**: DeepSeek
+*   **数据源**: GitHub Trending 页面, GitHub README 文件
 *   **部署平台**: Vercel
 
 ## 🚀 如何运行
@@ -60,6 +64,7 @@ GitTok 提供了一种全新的、沉浸式的方式来浏览 GitHub 上的热�
 *   [ ] **更丰富的项目信息**: 尝试提取贡献者、更详细的活动数据等。
 *   [x] **部署**: 已使用 Vercel 部署。
 *   [ ] **PWA 支持**: 使其成为可安装的渐进式 Web 应用。
+*   [ ] **缓存 AI 总结**: 提高性能并减少 API 调用。
 
 ## 🤝 贡献
 
