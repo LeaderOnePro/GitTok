@@ -15,15 +15,16 @@ GitTok 提供了一种全新的、沉浸式的方式来浏览 GitHub 上的热�
 *   **毛玻璃效果**: 现代化的视觉效果，突出项目信息。
 *   **分享功能**: 轻松将 GitTok 项目分享给朋友或同事。
 *   **Serverless API**: 使用 Vercel Serverless Functions 稳定可靠地获取 GitHub Trending 数据。
-*   **AI 总结**: 利用 AI (Grok) 对项目 README 进行中文总结，快速了解项目核心。
+*   **AI 总结**: 利用 AI (Grok) 对项目 README 进行中文总结，快速了解项目核心 (懒加载)。
 *   **时间范围选择**: 支持查看今日、本周和本月的 GitHub Trending 数据。
+*   **加载动画**: 使用 Octocat 图标和模糊背景提供更友好的加载体验。
 
 ## 🛠️ 技术栈
 
 *   **前端**: HTML, CSS, JavaScript (无框架)
 *   **后端 API**: Vercel Serverless Functions (Node.js runtime)
     *   `/api/trending`: 获取 Trending 列表 (使用 `node-fetch`, `cheerio`)
-    *   `/api/summarize`: 获取单个仓库的 AI 总结 (使用 `node-fetch`, `openai` SDK, DeepSeek API)
+    *   `/api/summarize`: 获取单个仓库的 AI 总结 (使用 `node-fetch`, Grok API - 具体实现可能需要调整)
 *   **AI 服务**: Grok
 *   **数据源**: GitHub Trending 页面, GitHub README 文件. 调用模型：grok-3-mini-beta
 *   **部署平台**: Vercel
