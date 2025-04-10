@@ -12,48 +12,49 @@ body, html {
 /* Controls Container */
 .controls {
     position: fixed;
-    top: 20px; /* Slightly lower */
+    top: 20px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
-    background-color: transparent; /* Remove background */
-    padding: 0; /* Remove padding */
-    border-radius: 20px; /* More rounded container for buttons */
+    background-color: rgba(0, 0, 0, 0.1); /* Very subtle dark background */
+    padding: 4px; /* Add slight padding inside */
+    border-radius: 20px; /* Keep rounded container */
     display: flex;
-    gap: 0; /* No gap, buttons will touch */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    overflow: hidden; /* Clip button corners */
+    gap: 4px; /* Add small gap between buttons */
+    box-shadow: none; /* Remove shadow */
+    overflow: visible; /* Allow potential hover effects outside bounds */
+    backdrop-filter: blur(3px); /* Subtle blur */
+    -webkit-backdrop-filter: blur(3px);
 }
 
 /* Time Range Buttons */
 .time-range-btn {
-    padding: 8px 16px; /* Adjust padding */
-    background-color: rgba(255, 255, 255, 0.7); /* Lighter background */
-    color: #333; /* Darker text */
-    border: none; /* Remove border */
-    border-radius: 0; /* No individual radius, rely on container */
+    padding: 6px 14px; /* Adjust padding */
+    background-color: transparent; /* Transparent by default */
+    color: rgba(255, 255, 255, 0.7); /* Semi-transparent white text */
+    border: none;
+    border-radius: 16px; /* Rounded corners for individual buttons */
     cursor: pointer;
-    font-size: 0.9em; /* Slightly larger font */
-    font-weight: 500; /* Medium weight */
+    font-size: 0.85em;
+    font-weight: 500;
     transition: background-color 0.2s ease, color 0.2s ease;
-    /* Add subtle separator */
-    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Add shadow for readability */
+    border-right: none; /* Remove separator */
 }
 
-/* Remove separator from the last button */
-.time-range-btn:last-child {
-    border-right: none;
-}
+/* Remove separator from the last button (already removed border-right) */
+/* .time-range-btn:last-child { ... } */
 
 
 .time-range-btn:hover {
-    background-color: rgba(255, 255, 255, 0.85);
+    background-color: rgba(255, 255, 255, 0.1); /* Subtle white highlight on hover */
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .time-range-btn.active {
-    background-color: #fff; /* White background for active */
-    color: #007bff; /* Example primary color for active text */
-    font-weight: 600; /* Slightly bolder */
+    background-color: rgba(255, 255, 255, 0.2); /* Slightly more opaque white for active */
+    color: #fff; /* Fully white text for active */
+    font-weight: 600;
 }
 
 
@@ -239,12 +240,13 @@ body, html {
 /* 6. Responsive Design (Media Queries) */
 @media (max-width: 768px) {
     .controls {
-        top: 15px; /* Adjust mobile position */
-        /* Keep other mobile styles simple */
+        top: 15px;
+        padding: 3px;
+        gap: 3px;
     }
     .time-range-btn {
-        padding: 6px 12px; /* Adjust mobile padding */
-        font-size: 0.85em;
+        padding: 5px 10px;
+        font-size: 0.8em;
     }
     .content-image {
         width: 85%; /* Increase image width slightly on smaller screens */
