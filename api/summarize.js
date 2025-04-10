@@ -57,7 +57,7 @@ async function getAiSummary(readmeContent) {
         ? readmeContent.substring(0, maxLength) + "..."
         : readmeContent;
 
-    const prompt = `请根据以下 GitHub 项目的 README 内容，用简体中文提供一个简洁的一句话总结 (不超过 30 字):\n\n---\n\n${truncatedContent}\n\n---\n\n中文总结:`;
+    const prompt = `请根据以下 GitHub 项目的 README 内容，用简体中文提供一个简洁的一句话总结:\n\n---\n\n${truncatedContent}\n\n---\n\n中文总结:`;
 
     try {
         console.log(`Requesting summary from Grok for README (length: ${truncatedContent.length})...`);
