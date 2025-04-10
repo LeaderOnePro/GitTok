@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchTrendingRepos(since = 'daily') { // Accept 'since' parameter
         // Clear previous content and show loading indicator
-        feedContainer.innerHTML = '<div class="gittok-item loading"><p>正在加载 GitHub Trending 项目...</p></div>';
+        feedContainer.innerHTML = '<div class="gittok-item loading"><div class="spinner"></div></div>'; // Use spinner instead of text
         // Reset observer if it exists
         if (observer) {
             observer.disconnect();
