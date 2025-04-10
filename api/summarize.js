@@ -1,6 +1,5 @@
 // api/summarize.js - Vercel Serverless Function for summarizing a single repo's README
 import fetch from 'node-fetch';
-import { OpenAI } from 'openai'; // Correct import
 
 // --- CORS Helper ---
 const allowCors = fn => async (req, res) => {
@@ -17,17 +16,6 @@ const allowCors = fn => async (req, res) => {
     }
     return await fn(req, res);
 };
-
-// --- DeepSeek/OpenAI Client Initialization ---
-let openai;
-if (process.env.DEEPSEEK_API_KEY) {
-    openai = new OpenAI({
-        apiKey: process.env.DEEPSEEK_API_KEY,
-        baseURL: "https://api.deepseek.com/v1", // DeepSeek API endpoint
-    });
-} else {
-    console.warn("DEEPSEEK_API_KEY environment variable not set.");
-}
 
 // --- Helper to fetch README ---
 async function fetchReadmeContent(author, repo) {
@@ -56,11 +44,11 @@ async function fetchReadmeContent(author, repo) {
 
 // --- Helper to get AI Summary ---
 async function getAiSummary(readmeContent) {
-    if (!openai) {
-        return "AI summarization is not configured.";
-    }
     if (!readmeContent || readmeContent.trim() === '') {
         return "README is empty or could not be fetched.";
+    }
+    if (!process.env.GROK_API_KEY) {
+        return "Grok API key not configured.";
     }
 
     // Simple truncation to avoid overly long prompts (adjust length as needed)
@@ -72,24 +60,40 @@ async function getAiSummary(readmeContent) {
     const prompt = `请根据以下 GitHub 项目的 README 内容，用简体中文提供一个简洁的一句话总结 (不超过 30 字):\n\n---\n\n${truncatedContent}\n\n---\n\n中文总结:`;
 
     try {
-        console.log(`Requesting summary from DeepSeek for README (length: ${truncatedContent.length})...`);
-        const completion = await openai.chat.completions.create({
-            model: "deepseek-chat", // Use the appropriate DeepSeek model
-            messages: [{ role: "user", content: prompt }],
-            max_tokens: 60, // Limit summary length
-            temperature: 0.5, // Adjust creativity
-            stream: false, // We want the full response
+        console.log(`Requesting summary from Grok for README (length: ${truncatedContent.length})...`);
+        const response = await fetch('https://api.x.ai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.GROK_API_KEY}`
+            },
+            body: JSON.stringify({
+                messages: [
+                    {
+                        role: "system",
+                        content: "You are a helpful assistant."
+                    },
+                    {
+                        role: "user",
+                        content: prompt
+                    }
+                ],
+                model: "grok-3-latest",
+                stream: false,
+                temperature: 0.5
+            })
         });
 
-        const summary = completion.choices[0]?.message?.content?.trim();
+        const data = await response.json();
+        const summary = data.choices[0]?.message?.content?.trim();
         console.log("Received summary:", summary);
-        return summary || "Could not generate summary.";
-
+        return summary || "Failed to generate summary.";
     } catch (error) {
-        console.error("Error calling DeepSeek API:", error);
+        console.error("Error calling Grok API:", error);
         return `Error generating summary: ${error.message}`;
     }
 }
+
 
 
 // --- Main Serverless Function Handler ---
