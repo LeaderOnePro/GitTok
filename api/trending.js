@@ -25,10 +25,15 @@ const allowCors = fn => async (req, res) => {
 
 // The main handler function for the serverless endpoint
 async function handler(req, res) {
-    const trendingUrl = 'https://github.com/trending';
+    // Read the 'since' query parameter (daily, weekly, monthly)
+    const since = req.query.since || 'daily'; // Default to 'daily'
+    const validSinceValues = ['daily', 'weekly', 'monthly'];
+    const timeRange = validSinceValues.includes(since) ? since : 'daily'; // Validate or default
+
+    const trendingUrl = `https://github.com/trending?since=${timeRange}`;
 
     try {
-        console.log(`Fetching data from ${trendingUrl}...`);
+        console.log(`Fetching data from ${trendingUrl}...`); // Log the actual URL being fetched
         const response = await fetch(trendingUrl, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'

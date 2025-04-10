@@ -1,14 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
     const feedContainer = document.querySelector('.gittok-feed');
-    const trendingApiUrl = '/api/trending'; // Relative path for Vercel Serverless Function
-    // const trendingApiUrl = 'http://localhost:3000/api/trending'; // For local backend testing
+    const baseApiUrl = '/api/trending'; // Base path for the trending API
+    const timeRangeButtons = document.querySelectorAll('.time-range-btn');
+    let currentSince = 'daily'; // Default time range
+    // const localApiUrl = 'http://localhost:3000/api/trending'; // For local backend testing
 
-    async function fetchTrendingRepos() {
-        // 清除初始消息
+    async function fetchTrendingRepos(since = 'daily') { // Accept 'since' parameter
+        // Clear previous content and show loading indicator
         feedContainer.innerHTML = '<div class="gittok-item loading"><p>正在加载 GitHub Trending 项目...</p></div>';
+        // Reset observer if it exists
+        if (observer) {
+            observer.disconnect();
+        }
 
         try {
-            const response = await fetch(trendingApiUrl);
+            const apiUrlWithSince = `${baseApiUrl}?since=${since}`;
+            const response = await fetch(apiUrlWithSince);
             if (!response.ok) {
                 throw new Error(`HTTP 错误! 状态: ${response.status}`);
             }
@@ -30,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('获取 GitHub Trending 数据时出错:', error);
-            feedContainer.innerHTML = `<div class="gittok-item error-message"><p>加载 GitHub Trending 数据失败: ${error.message}</p><p>无法连接到 API: ${trendingApiUrl}</p><p>请检查网络连接或 API 状态。</p></div>`;
+            feedContainer.innerHTML = `<div class="gittok-item error-message"><p>加载 GitHub Trending 数据失败: ${error.message}</p><p>无法连接到 API: ${apiUrlWithSince}</p><p>请检查网络连接或 API 状态。</p></div>`;
         }
     }
 
@@ -215,6 +222,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Initial data fetch on page load
-    fetchTrendingRepos();
+    // --- Event Listeners for Time Range Buttons ---
+    timeRangeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remove active class from all buttons
+            timeRangeButtons.forEach(btn => btn.classList.remove('active'));
+            // Add active class to the clicked button
+            button.classList.add('active');
+            // Get the new time range
+            currentSince = button.dataset.since;
+            // Fetch data for the new time range
+            fetchTrendingRepos(currentSince);
+        });
+    });
+
+    // Initial data fetch on page load with default time range
+    fetchTrendingRepos(currentSince);
 });

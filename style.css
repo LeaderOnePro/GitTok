@@ -9,6 +9,45 @@ body, html {
     color: #fff; /* Default text color back to white */
 }
 
+/* Controls Container */
+.controls {
+    position: fixed; /* Fixed position at the top */
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%); /* Center horizontally */
+    z-index: 10; /* Ensure it's above everything */
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 5px 10px;
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    display: flex;
+    gap: 10px;
+}
+
+/* Time Range Buttons */
+.time-range-btn {
+    padding: 6px 12px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #eee;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: background-color 0.2s ease;
+}
+
+.time-range-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.time-range-btn.active {
+    background-color: rgba(255, 255, 255, 0.3);
+    font-weight: bold;
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+
 .gittok-feed {
     height: 100vh; /* 占满整个视口高度 */
     width: 100vw; /* 占满整个视口宽度 */
@@ -190,6 +229,15 @@ body, html {
 
 /* 6. Responsive Design (Media Queries) */
 @media (max-width: 768px) {
+    .controls {
+        top: 10px; /* Adjust position for mobile */
+        padding: 4px 8px;
+        gap: 8px;
+    }
+    .time-range-btn {
+        padding: 5px 10px;
+        font-size: 0.8em;
+    }
     .content-image {
         width: 85%; /* Increase image width slightly on smaller screens */
         max-width: 90%; /* Allow it to take more horizontal space */
