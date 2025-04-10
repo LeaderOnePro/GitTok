@@ -225,38 +225,58 @@ body, html {
 
 /* 5. Loading State Styling */
 .loading {
-    /* Inherit full size from .gittok-item */
     height: 100%;
     width: 100%;
-    position: absolute; /* Position relative to .gittok-item */
+    position: absolute;
     top: 0;
     left: 0;
-    display: flex;
+    display: flex; /* Use flex to center content */
     justify-content: center;
     align-items: center;
-    /* GitHub-like blurred background using gradient */
+    /* Keep the blurred gradient background */
     background: linear-gradient(135deg, rgba(50, 50, 80, 0.8) 0%, rgba(30, 30, 50, 0.8) 100%);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    z-index: 5; /* Ensure it's above other item content if needed */
-    color: #fff; /* For any potential text fallback */
+    z-index: 5;
+    color: #fff;
 }
 
-/* Spinner Animation */
-.spinner {
-    border: 4px solid rgba(255, 255, 255, 0.3); /* Light border */
-    border-left-color: #fff; /* White loading segment */
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
+.loading-content {
+    display: flex;
+    flex-direction: column; /* Stack icon and text vertically */
+    align-items: center;
+    text-align: center;
 }
 
-@keyframes spin {
+.octocat-spinner {
+    width: 64px; /* Adjust size as needed */
+    height: 64px;
+    fill: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
+    margin-bottom: 15px; /* Space between icon and text */
+    /* Optional: Add a subtle animation */
+    animation: octocat-pulse 1.5s ease-in-out infinite alternate;
+}
+
+.loading-content p {
+    font-size: 1.1em;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+    margin: 0;
+}
+
+/* Optional pulse animation for Octocat */
+@keyframes octocat-pulse {
+    from {
+        opacity: 0.7;
+        transform: scale(1);
+    }
     to {
-        transform: rotate(360deg);
+        opacity: 1;
+        transform: scale(1.05);
     }
 }
+
+/* Remove old spinner keyframes if they exist */
+/* @keyframes spin { ... } */
 
 /* 6. Responsive Design (Media Queries) */
 @media (max-width: 768px) {
