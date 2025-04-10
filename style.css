@@ -11,40 +11,49 @@ body, html {
 
 /* Controls Container */
 .controls {
-    position: fixed; /* Fixed position at the top */
-    top: 15px;
+    position: fixed;
+    top: 20px; /* Slightly lower */
     left: 50%;
-    transform: translateX(-50%); /* Center horizontally */
-    z-index: 10; /* Ensure it's above everything */
-    background-color: rgba(0, 0, 0, 0.3);
-    padding: 5px 10px;
-    border-radius: 8px;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    transform: translateX(-50%);
+    z-index: 10;
+    background-color: transparent; /* Remove background */
+    padding: 0; /* Remove padding */
+    border-radius: 20px; /* More rounded container for buttons */
     display: flex;
-    gap: 10px;
+    gap: 0; /* No gap, buttons will touch */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    overflow: hidden; /* Clip button corners */
 }
 
 /* Time Range Buttons */
 .time-range-btn {
-    padding: 6px 12px;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: #eee;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 5px;
+    padding: 8px 16px; /* Adjust padding */
+    background-color: rgba(255, 255, 255, 0.7); /* Lighter background */
+    color: #333; /* Darker text */
+    border: none; /* Remove border */
+    border-radius: 0; /* No individual radius, rely on container */
     cursor: pointer;
-    font-size: 0.85em;
-    transition: background-color 0.2s ease;
+    font-size: 0.9em; /* Slightly larger font */
+    font-weight: 500; /* Medium weight */
+    transition: background-color 0.2s ease, color 0.2s ease;
+    /* Add subtle separator */
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+/* Remove separator from the last button */
+.time-range-btn:last-child {
+    border-right: none;
+}
+
+
 .time-range-btn:hover {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.85);
 }
 
 .time-range-btn.active {
-    background-color: rgba(255, 255, 255, 0.3);
-    font-weight: bold;
-    border-color: rgba(255, 255, 255, 0.4);
+    background-color: #fff; /* White background for active */
+    color: #007bff; /* Example primary color for active text */
+    font-weight: 600; /* Slightly bolder */
 }
 
 
@@ -230,13 +239,12 @@ body, html {
 /* 6. Responsive Design (Media Queries) */
 @media (max-width: 768px) {
     .controls {
-        top: 10px; /* Adjust position for mobile */
-        padding: 4px 8px;
-        gap: 8px;
+        top: 15px; /* Adjust mobile position */
+        /* Keep other mobile styles simple */
     }
     .time-range-btn {
-        padding: 5px 10px;
-        font-size: 0.8em;
+        padding: 6px 12px; /* Adjust mobile padding */
+        font-size: 0.85em;
     }
     .content-image {
         width: 85%; /* Increase image width slightly on smaller screens */
