@@ -17,6 +17,9 @@ const allowCors = fn => async (req, res) => {
     return await fn(req, res);
 };
 
+// --- Simple In-Memory Cache ---
+const summaryCache = new Map();
+
 // --- Helper to fetch README ---
 async function fetchReadmeContent(author, repo) {
     const branches = ['main', 'master']; // Common default branches
@@ -44,6 +47,16 @@ async function fetchReadmeContent(author, repo) {
 
 // --- Helper to get AI Summary ---
 async function getAiSummary(readmeContent) {
+
+    // Check the cache first
+    if (summaryCache.has(readmeContent)) {
+        console.log("Cache hit! Returning cached summary.");
+        return summaryCache.get(readmeContent);
+    }
+    
+    console.log("Cache miss. Fetching new summary from Grok API");
+
+
     if (!readmeContent || readmeContent.trim() === '') {
         return "README is empty or could not be fetched.";
     }
@@ -87,6 +100,10 @@ async function getAiSummary(readmeContent) {
         const data = await response.json();
         const summary = data.choices[0]?.message?.content?.trim();
         console.log("Received summary:", summary);
+
+        // Store the new summary in the cache
+        summaryCache.set(readmeContent, summary);
+
         return summary || "Failed to generate summary.";
     } catch (error) {
         console.error("Error calling Grok API:", error);
