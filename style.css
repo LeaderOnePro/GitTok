@@ -297,20 +297,38 @@ body, html {
         background-size: cover; /* Cover might be better than contain on mobile */
     }
 
-    .info-left, .info-right {
-        bottom: 10px; /* Further reduce bottom spacing */
-        max-width: 85%; /* Allow text to take slightly more width */
+    .info-left {
+        bottom: 15px; /* Increase bottom spacing slightly */
+        left: 15px; /* Increase side spacing slightly */
+        max-width: 75%; /* Reduce max-width to leave more space */
         text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
     }
 
-    .info-left {
-        left: 10px; /* Further reduce side spacing */
-    }
+    /* Removed redundant .info-left rule */
 
     .info-right {
-        right: 10px; /* Further reduce side spacing */
-        max-width: 70%; /* Adjust max-width for description */
-        bottom: 50px; /* Adjust description position */
+        bottom: 15px; /* Match bottom spacing with left */
+        right: 15px; /* Increase side spacing slightly */
+        max-width: 75%; /* Reduce max-width */
+        /* Add max-height and overflow */
+        max-height: 35vh; /* Limit height (adjust as needed) */
+        overflow-y: auto; /* Add scroll if content exceeds max-height */
+        /* Optional: Style scrollbar for webkit browsers */
+        scrollbar-width: thin; /* Firefox */
+        scrollbar-color: rgba(255,255,255,0.3) transparent; /* Firefox */
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+    }
+    /* Optional: Webkit scrollbar styling */
+    .info-right::-webkit-scrollbar {
+        width: 5px;
+    }
+    .info-right::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .info-right::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        border: transparent;
     }
 
      .info-left h2 {
