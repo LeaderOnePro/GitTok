@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GitTok - 像刷 TikTok 一样刷 GitHub Trending</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Favicon -->
+    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="shortcut icon" href="logo.png" type="image/png">
 </head>
 <body>
     <div class="controls">
-        <button data-since="daily" class="time-range-btn active">今日</button>
-        <button data-since="weekly" class="time-range-btn">本周</button>
-        <button data-since="monthly" class="time-range-btn">本月</button>
+        <button type="button" data-since="daily" class="time-range-btn active">今日</button>
+        <button type="button" data-since="weekly" class="time-range-btn">本周</button>
+        <button type="button" data-since="monthly" class="time-range-btn">本月</button>
     </div>
     <div class="gittok-feed">
         <!-- GitHub Trending 项目将在这里动态加载 -->
