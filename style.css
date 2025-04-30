@@ -139,6 +139,32 @@ body, html {
     text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); /* Stronger shadow */
 }
 
+/* Styling for specific info lines if needed */
+.info-author {
+    /* Example: Slightly smaller font for author */
+    /* font-size: 0.9em; */
+    margin: 2px 0; /* Adjust vertical spacing */
+}
+
+.info-stats {
+    margin: 2px 0; /* Adjust vertical spacing */
+}
+
+/* Container for Today Stars and DeepWiki button */
+.today-info-container {
+    display: flex;
+    align-items: center; /* Vertically align items */
+    margin-top: 5px; /* Space above this line */
+}
+
+.today-stars {
+    margin: 0; /* Remove default margin */
+    margin-right: 15px; /* Space between stars and button */
+    font-size: 0.95em;
+    font-weight: bold; /* Make today's stars bold */
+    color: inherit;
+}
+
 /* 3. Text Styling within Info Blocks */
 .info-left h2, .info-left p, .info-right p {
     margin: 4px 0; /* Adjust spacing */
@@ -214,11 +240,12 @@ body, html {
 
 /* 5. DeepWiki Button Styling */
 .deepwiki-btn {
-    /* Position it inline within infoLeft */
+    /* Position it inline within the container */
     display: inline-flex; /* Align icon and text */
     align-items: center; /* Vertically center icon and text */
-    margin-left: 15px; /* Add space to the left, separating from 'Today Stars' */
-    margin-top: 0; /* Reset top margin as it's inline now */
+    /* Remove margin-left as spacing is handled by the container */
+    margin-left: 0;
+    margin-top: 0; /* Reset top margin */
     padding: 4px 8px; /* Adjust padding */
     background-color: rgba(60, 120, 240, 0.7); /* A distinct blue color */
     color: #fff;

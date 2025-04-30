@@ -78,18 +78,20 @@ document.addEventListener('DOMContentLoaded', () => {
         infoLeft.classList.add('info-left');
         itemDiv.appendChild(infoLeft); // 直接添加到 itemDiv
 
-        // 项目名称 (不再是链接)
+        // 项目名称 (Row 0)
         const title = document.createElement('h2');
         title.textContent = repo.name;
         infoLeft.appendChild(title);
 
-        // 作者
+        // 作者 (Row 1)
         const authorP = document.createElement('p');
+        authorP.classList.add('info-author'); // Add class for potential styling
         authorP.textContent = `作者: ${repo.author}`;
         infoLeft.appendChild(authorP);
 
-        // 语言和星星
+        // 语言、星星、Forks (Row 2)
         const statsP = document.createElement('p');
+        statsP.classList.add('info-stats'); // Add class for potential styling
         let statsText = '';
         if (repo.language) {
             statsText += `语言: ${repo.language} | `;
@@ -98,35 +100,40 @@ document.addEventListener('DOMContentLoaded', () => {
         statsP.textContent = statsText;
         infoLeft.appendChild(statsP);
 
-        // 今日星星
-        const todayStarsP = document.createElement('p');
-        todayStarsP.textContent = `今日 Star: ${repo.currentPeriodStars}`;
-        todayStarsP.style.fontWeight = 'bold';
-        infoLeft.appendChild(todayStarsP);
+        // 今日星星 和 DeepWiki 按钮 (Row 3)
+        const todayInfoDiv = document.createElement('div'); // Container for Row 3
+        todayInfoDiv.classList.add('today-info-container');
 
-        // DeepWiki Button (Moved to infoLeft)
+        const todayStarsSpan = document.createElement('span'); // Use span for inline display
+        todayStarsSpan.classList.add('today-stars');
+        todayStarsSpan.textContent = `今日 Star: ${repo.currentPeriodStars}`;
+        // todayStarsSpan.style.fontWeight = 'bold'; // Style with CSS instead if needed
+        todayInfoDiv.appendChild(todayStarsSpan);
+
+        // DeepWiki Button
         const deepWikiButton = document.createElement('button');
-        deepWikiButton.classList.add('deepwiki-btn'); // Add class for styling
-        // Use img tag for the icon and add text
+        deepWikiButton.classList.add('deepwiki-btn');
         deepWikiButton.innerHTML = `<img src="deepwiki.png" alt="DeepWiki"> DeepWiki`;
-        deepWikiButton.title = '在 DeepWiki 中打开'; // Keep updated title
+        deepWikiButton.title = '在 DeepWiki 中打开';
         deepWikiButton.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent triggering image click or other info block clicks
-            // Construct DeepWiki URL by replacing github.com with deepwiki.com
-            let deepWikiUrl = repo.url; // Start with the original GitHub URL
+            e.stopPropagation();
+            let deepWikiUrl = repo.url;
             if (deepWikiUrl && deepWikiUrl.includes('github.com')) {
                 deepWikiUrl = deepWikiUrl.replace('github.com', 'deepwiki.com');
             } else {
-                // Fallback or handle cases where the URL is not a standard GitHub URL
                 console.warn('Could not generate DeepWiki URL from:', repo.url);
-                // Optional: Fallback to search if direct replacement fails
                 const repoNameForSearch = encodeURIComponent(repo.name.split('/').pop());
-                deepWikiUrl = `https://deepwiki.com/search?q=${repoNameForSearch}`; // Use .com for search as well
+                deepWikiUrl = `https://deepwiki.com/search?q=${repoNameForSearch}`;
             }
             window.open(deepWikiUrl, '_blank');
         });
-        // Append to infoLeft, next to 'Today Stars'
-        infoLeft.appendChild(deepWikiButton);
+        todayInfoDiv.appendChild(deepWikiButton); // Append button to the Row 3 container
+
+        infoLeft.appendChild(todayInfoDiv); // Append Row 3 container to infoLeft
+
+        // REMOVE previous individual appends for todayStarsP and deepWikiButton
+        // infoLeft.appendChild(todayStarsP);
+        // infoLeft.appendChild(deepWikiButton);
 
         // 3. 右下角信息 (描述 + AI 总结占位符)
         const infoRight = document.createElement('div');
