@@ -199,86 +199,43 @@ body, html {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 32px;
-    height: 32px;
-    backdrop-filter: blur(5px); /* Optional blur for the button */
-    -webkit-backdrop-filter: blur(5px);
+    width: 30px; /* Fixed width */
+    height: 30px; /* Fixed height */
+    font-size: 1.1em;
     transition: background-color 0.2s ease, transform 0.2s ease;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
 }
-
-.share-button svg {
-    width: 16px; /* Ensure SVG size is controlled */
-    height: 16px;
-}
-
 
 .share-button:hover {
     background-color: rgba(255, 255, 255, 0.3);
     transform: scale(1.1);
 }
 
-.share-button:active {
-    background-color: rgba(255, 255, 255, 0.4);
-    transform: scale(1.05);
-}
-
-
-/* 5. Loading State Styling */
-.loading {
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: flex; /* Use flex to center content */
-    justify-content: center;
-    align-items: center;
-    /* Keep the blurred gradient background */
-    background: linear-gradient(135deg, rgba(50, 50, 80, 0.8) 0%, rgba(30, 30, 50, 0.8) 100%);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    z-index: 5;
+/* 5. DeepWiki Button Styling */
+.deepwiki-btn {
+    /* Position it below the description/summary in the info-right block */
+    display: block; /* Make it a block element to take full width of its container if needed */
+    margin-top: 10px; /* Add some space above the button */
+    padding: 6px 12px;
+    background-color: rgba(60, 120, 240, 0.7); /* A distinct blue color */
     color: #fff;
-}
-
-.loading-content {
-    display: flex;
-    flex-direction: column; /* Stack icon and text vertically */
-    align-items: center;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: bold;
     text-align: center;
+    transition: background-color 0.2s ease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.octocat-spinner {
-    width: 64px; /* Adjust size as needed */
-    height: 64px;
-    fill: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
-    margin-bottom: 15px; /* Space between icon and text */
-    /* Optional: Add a subtle animation */
-    animation: octocat-pulse 1.5s ease-in-out infinite alternate;
+.deepwiki-btn:hover {
+    background-color: rgba(80, 140, 255, 0.9); /* Lighter blue on hover */
 }
 
-.loading-content p {
-    font-size: 1.1em;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
-    margin: 0;
-}
 
-/* Optional pulse animation for Octocat */
-@keyframes octocat-pulse {
-    from {
-        opacity: 0.7;
-        transform: scale(1);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1.05);
-    }
-}
-
-/* Remove old spinner keyframes if they exist */
-/* @keyframes spin { ... } */
-
-/* 6. Responsive Design (Media Queries) */
+/* Responsive Adjustments */
 @media (max-width: 768px) {
     .controls {
         top: 15px;
