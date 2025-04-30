@@ -124,19 +124,18 @@ document.addEventListener('DOMContentLoaded', () => {
         itemDiv.dataset.author = repo.author;
         itemDiv.dataset.repo = repo.name;
 
-        // 4. 分享按钮 (保持不变)
+        // 4. 分享按钮
         const shareButton = document.createElement('button');
         shareButton.classList.add('share-button');
-        shareButton.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
-            </svg>
-        `;
+        // Use simple link emoji for consistency, or keep SVG if preferred
+        shareButton.innerHTML = '🔗';
+        shareButton.title = '分享 GitTok 项目'; // Updated title
         itemDiv.appendChild(shareButton);
 
-        // 分享事件处理 (保持不变)
-        shareButton.addEventListener('click', async () => {
-            const shareUrl = 'https://github.com/LeaderOnePro/GitTok';
+        // 分享事件处理
+        shareButton.addEventListener('click', async (e) => {
+            e.stopPropagation(); // Prevent triggering image click
+            const shareUrl = 'https://github.com/LeaderOnePro/GitTok'; // URL of your GitTok project
             const shareTitle = 'GitTok - 像刷 TikTok 一样刷 GitHub Trending';
             const shareText = `快来看看这个项目 GitTok，用 TikTok 的方式浏览 GitHub Trending！ ${shareUrl}`;
 
@@ -151,19 +150,46 @@ document.addEventListener('DOMContentLoaded', () => {
                 } catch (err) {
                     if (err.name !== 'AbortError') {
                         console.error('分享时出错:', err);
-                        alert(`分享失败: ${err.message}`);
+                        // Optional: Show user feedback
                     }
                 }
             } else {
+                // Fallback for browsers without navigator.share
                 try {
                     await navigator.clipboard.writeText(shareUrl);
-                    alert('链接已复制到剪贴板！');
+                     // Optional: Show temporary confirmation message on the button
+                    const originalText = shareButton.innerHTML;
+                    shareButton.innerHTML = '✅';
+                    setTimeout(() => { shareButton.innerHTML = originalText; }, 1500);
                 } catch (err) {
                     console.error('无法复制链接:', err);
-                    alert('复制链接失败，请手动复制:\n' + shareUrl);
+                    alert('复制链接失败，请手动复制:\n' + shareUrl); // Alert as fallback
                 }
             }
         });
+
+        // 5. DeepWiki Button
+        const deepWikiButton = document.createElement('button');
+        deepWikiButton.classList.add('deepwiki-btn'); // Add class for styling
+        deepWikiButton.innerHTML = 'DW'; // Or use an icon/full text
+        deepWikiButton.title = '在 DeepWiki 中打开'; // Updated title
+        deepWikiButton.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent triggering image click
+            // Construct DeepWiki URL by replacing github.com with deepwiki.com
+            let deepWikiUrl = repo.url; // Start with the original GitHub URL
+            if (deepWikiUrl && deepWikiUrl.includes('github.com')) {
+                deepWikiUrl = deepWikiUrl.replace('github.com', 'deepwiki.com');
+            } else {
+                // Fallback or handle cases where the URL is not a standard GitHub URL
+                console.warn('Could not generate DeepWiki URL from:', repo.url);
+                // Optional: Fallback to search if direct replacement fails
+                const repoNameForSearch = encodeURIComponent(repo.name.split('/').pop());
+                deepWikiUrl = `https://deepwiki.com/search?q=${repoNameForSearch}`; // Use .com for search as well
+            }
+            window.open(deepWikiUrl, '_blank');
+        });
+        // Append to infoRight or another suitable container
+        infoRight.appendChild(deepWikiButton); // Add it below the description/summary
 
         return itemDiv;
     }
@@ -250,6 +276,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+// REMOVE THE DUPLICATED FUNCTIONS BELOW
+/*
 function createGitTokItem(repo) {
     const item = document.createElement('div');
     item.classList.add('gittok-item');
@@ -387,3 +415,4 @@ async function fetchAndDisplayTrending(since = 'daily') {
         feed.innerHTML = '<div class="gittok-item"><p>加载失败，请稍后重试。</p></div>';
     }
 }
+*/
