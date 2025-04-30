@@ -103,6 +103,30 @@ document.addEventListener('DOMContentLoaded', () => {
         todayStarsP.style.fontWeight = 'bold';
         infoLeft.appendChild(todayStarsP);
 
+        // DeepWiki Button (Moved to infoLeft)
+        const deepWikiButton = document.createElement('button');
+        deepWikiButton.classList.add('deepwiki-btn'); // Add class for styling
+        // Use img tag for the icon and add text
+        deepWikiButton.innerHTML = `<img src="deepwiki.png" alt="DeepWiki"> DeepWiki`;
+        deepWikiButton.title = '在 DeepWiki 中打开'; // Keep updated title
+        deepWikiButton.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent triggering image click or other info block clicks
+            // Construct DeepWiki URL by replacing github.com with deepwiki.com
+            let deepWikiUrl = repo.url; // Start with the original GitHub URL
+            if (deepWikiUrl && deepWikiUrl.includes('github.com')) {
+                deepWikiUrl = deepWikiUrl.replace('github.com', 'deepwiki.com');
+            } else {
+                // Fallback or handle cases where the URL is not a standard GitHub URL
+                console.warn('Could not generate DeepWiki URL from:', repo.url);
+                // Optional: Fallback to search if direct replacement fails
+                const repoNameForSearch = encodeURIComponent(repo.name.split('/').pop());
+                deepWikiUrl = `https://deepwiki.com/search?q=${repoNameForSearch}`; // Use .com for search as well
+            }
+            window.open(deepWikiUrl, '_blank');
+        });
+        // Append to infoLeft, next to 'Today Stars'
+        infoLeft.appendChild(deepWikiButton);
+
         // 3. 右下角信息 (描述 + AI 总结占位符)
         const infoRight = document.createElement('div');
         infoRight.classList.add('info-right');
@@ -189,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
             window.open(deepWikiUrl, '_blank');
         });
         // Append to infoRight or another suitable container
-        infoRight.appendChild(deepWikiButton); // Add it below the description/summary
+        // infoRight.appendChild(deepWikiButton); // REMOVED from here
 
         return itemDiv;
     }

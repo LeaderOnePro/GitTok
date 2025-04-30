@@ -214,20 +214,29 @@ body, html {
 
 /* 5. DeepWiki Button Styling */
 .deepwiki-btn {
-    /* Position it below the description/summary in the info-right block */
-    display: block; /* Make it a block element to take full width of its container if needed */
-    margin-top: 10px; /* Add some space above the button */
-    padding: 6px 12px;
+    /* Position it inline within infoLeft */
+    display: inline-flex; /* Align icon and text */
+    align-items: center; /* Vertically center icon and text */
+    margin-left: 15px; /* Add space to the left, separating from 'Today Stars' */
+    margin-top: 0; /* Reset top margin as it's inline now */
+    padding: 4px 8px; /* Adjust padding */
     background-color: rgba(60, 120, 240, 0.7); /* A distinct blue color */
     color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 0.8em;
-    font-weight: bold;
+    font-size: 0.85em; /* Slightly larger font */
+    font-weight: 500; /* Normal weight */
     text-align: center;
     transition: background-color 0.2s ease;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    vertical-align: middle; /* Align button vertically with surrounding text */
+}
+
+.deepwiki-btn img {
+    height: 1em; /* Match icon height roughly to font size */
+    width: auto;
+    margin-right: 5px; /* Space between icon and text */
 }
 
 .deepwiki-btn:hover {
