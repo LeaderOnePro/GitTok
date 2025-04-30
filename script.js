@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded and parsed'); // DEBUG LOG
     const feedContainer = document.querySelector('.gittok-feed');
     const baseApiUrl = '/api/trending'; // Base path for the trending API
     const timeRangeButtons = document.querySelectorAll('.time-range-btn');
@@ -192,7 +193,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // 5. DeepWiki Button
+        // 5. DeepWiki Button (This block is duplicated and should be removed)
+        /*
         const deepWikiButton = document.createElement('button');
         deepWikiButton.classList.add('deepwiki-btn'); // Add class for styling
         deepWikiButton.innerHTML = 'DW'; // Or use an icon/full text
@@ -214,6 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         // Append to infoRight or another suitable container
         // infoRight.appendChild(deepWikiButton); // REMOVED from here
+        */
 
         return itemDiv;
     }
@@ -296,11 +299,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Initial data fetch on page load with default time range
+    console.log('Calling fetchTrendingRepos...'); // DEBUG LOG
     fetchTrendingRepos(currentSince);
 });
 
-
-// REMOVE THE DUPLICATED FUNCTIONS BELOW
+// REMOVE THE ENTIRE COMMENTED BLOCK BELOW
 /*
 function createGitTokItem(repo) {
     const item = document.createElement('div');
