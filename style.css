@@ -336,68 +336,61 @@ body, html {
         font-size: 0.8em;
     }
 
-    .gittok-item { /* Updated */
-        flex-direction: column;
-        justify-content: flex-start; /* Align items to the top */
-        align-items: center; /* Center items horizontally */
-        /* overflow-y: auto; */ /* Optional: if content might exceed 100vh and needs internal scroll */
+    .gittok-item { /* Existing: flex-direction: column; justify-content: flex-start; align-items: center; */
+        /* No changes needed here directly for this request */
     }
 
     .content-image {
-        order: 1; /* Display first */
+        order: 1;
         width: 90%;
         max-width: 90%;
-        margin-top: 50px; /* Space for fixed controls */
-        margin-bottom: 15px; /* Consistent spacing */
+        margin-top: 10vh; /* Changed from 50px to push content block down */
+        margin-bottom: 15px;
     }
 
-    .info-right { /* Description block, comes after image */
+    .info-right { /* Description block */
         order: 2;
-        position: relative; /* Ensure it's in normal flow */
+        position: relative;
         width: 90%;
-        margin: 0 0 15px 0; /* top, right, bottom, left (right/left auto due to align-items:center on parent) */
+        margin: 0 0 15px 0;
         text-align: left;
         box-sizing: border-box;
-        /* Clear previous attempts at absolute/relative positioning for stacking */
         bottom: auto;
         left: auto;
         right: auto;
-        max-width: none; /* Let width: 90% control it */
+        max-width: none;
     }
 
-    .info-left { /* Title, author, stats, AI Summary, DeepWiki block, comes after description */
+    .info-left { /* Title, author, stats, AI Summary, DeepWiki block */
         order: 3;
-        position: relative; /* Ensure it's in normal flow */
+        position: relative;
         width: 90%;
-        margin: 0 0 15px 0; /* top, right, bottom, left */
+        /* margin: 0 0 15px 0; becomes: */
+        margin: auto 0 15px 0; /* Added margin-top: auto to push to bottom, kept other margins */
         text-align: left;
         box-sizing: border-box;
-        /* Clear previous attempts at absolute/relative positioning for stacking */
         bottom: auto;
         left: auto;
-        max-width: none; /* Let width: 90% control it */
+        max-width: none;
     }
 
-    /* .info-right::-webkit-scrollbar, .info-right::-webkit-scrollbar-track, .info-right::-webkit-scrollbar-thumb removed as .info-right is not meant to be independently scrollable with this layout */
-
-     .info-left h2 { /* Existing rule, keep it */
+     .info-left h2 {
         font-size: 1.3em;
     }
-     .info-left p, .info-right p.repo-description { /* Existing rule, keep it */
+     .info-left p, .info-right p.repo-description {
         font-size: 0.9em;
     }
-     .ai-summary { /* Existing rule, its margin should work within the new .info-left width */
+     .ai-summary {
         font-size: 0.8em;
         text-align: left;
-        margin: 10px 0; /* Adjusted: only top/bottom margin needed as text-align:left handles start. Horizontal handled by parent's padding or width. */
-        /* Original: margin: 0 15px 10px 15px; */
-        width: 100%; /* Take full width of its parent .info-left (which is 90% of screen) */
+        margin: 10px 0;
+        width: 100%;
         max-width: none;
-        box-sizing: border-box; /* Add for consistency */
+        box-sizing: border-box;
     }
 
     .share-button {
-        top: 15px; /* Keep its absolute positioning relative to .gittok-item */
+        top: 15px;
         right: 15px;
         width: 28px;
         height: 28px;
@@ -421,5 +414,11 @@ body, html {
 
     .blurred-background {
         filter: blur(20px) brightness(0.6);
+    }
+
+    /* Added styles for .loading on mobile */
+    .loading {
+        padding-top: 10vh; /* Push loading content down */
+        box-sizing: border-box;
     }
 }
