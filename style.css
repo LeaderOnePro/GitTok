@@ -339,42 +339,42 @@ body, html {
         width: 90%;
         max-width: 90%;
         margin-top: -2vh;
+        margin-bottom: 20px; /* Added space below image */
     }
 
-    .info-left {
-        left: 15px;
-        bottom: 15px;
-        max-width: calc(100% - 30px);
+    .info-left { /* Title, author, stats, DeepWiki button */
+        position: relative;   /* Changed from absolute */
+        bottom: auto;         /* Removed absolute positioning */
+        left: auto;           /* Removed absolute positioning */
+        max-width: none;      /* Allow full use of width within margins */
+        width: auto;          /* Allow natural width or fill container */
+        margin: 0 15px 15px 15px; /* top, horizontal, bottom margins */
+        text-align: left;     /* Ensure text alignment */
     }
 
-    .info-right {
-        position: relative;
+    .info-right { /* Description */
+        position: relative;   /* Stays relative */
         bottom: auto;
         right: auto;
-        left: 15px;
-        max-width: calc(100% - 30px);
-        text-align: left;
-        margin-top: 10px;
-        margin-bottom: 15px;
-    }
-    .info-right::-webkit-scrollbar {
-        display: none;
-    }
-    .info-right::-webkit-scrollbar-track {
-        display: none;
-    }
-    .info-right::-webkit-scrollbar-thumb {
-        display: none;
+        left: auto;           /* Remove fixed left offset, rely on margin */
+        max-width: none;      /* Allow full use of width within margins */
+        width: auto;          /* Allow natural width */
+        text-align: left;     /* Stays */
+        margin: 0 15px 10px 15px; /* top, horizontal, bottom margins */
     }
 
-     .info-left h2 {
+     .info-left h2 { /* Existing rule, keep it */
         font-size: 1.3em;
     }
-     .info-left p, .info-right p.repo-description {
+     .info-left p, .info-right p.repo-description { /* Existing rule, keep it */
         font-size: 0.9em;
     }
-     .ai-summary {
-        font-size: 0.8em;
+     .ai-summary { /* AI Summary */
+        font-size: 0.8em; /* Keep existing font adjustment */
+        text-align: left;     /* Ensure text alignment */
+        margin: 0 15px 10px 15px; /* top, horizontal, bottom margins */
+        width: auto;
+        max-width: none;
     }
 
     .share-button {
