@@ -335,33 +335,50 @@ body, html {
         padding: 5px 10px;
         font-size: 0.8em;
     }
+
+    .gittok-item { /* Updated */
+        flex-direction: column;
+        justify-content: flex-start; /* Align items to the top */
+        align-items: center; /* Center items horizontally */
+        /* overflow-y: auto; */ /* Optional: if content might exceed 100vh and needs internal scroll */
+    }
+
     .content-image {
+        order: 1; /* Display first */
         width: 90%;
         max-width: 90%;
-        margin-top: -2vh;
-        margin-bottom: 20px; /* Added space below image */
+        margin-top: 50px; /* Space for fixed controls */
+        margin-bottom: 15px; /* Consistent spacing */
     }
 
-    .info-left { /* Title, author, stats, DeepWiki button */
-        position: relative;   /* Changed from absolute */
-        bottom: auto;         /* Removed absolute positioning */
-        left: auto;           /* Removed absolute positioning */
-        max-width: none;      /* Allow full use of width within margins */
-        width: auto;          /* Allow natural width or fill container */
-        margin: 0 15px 15px 15px; /* top, horizontal, bottom margins */
-        text-align: left;     /* Ensure text alignment */
-    }
-
-    .info-right { /* Description */
-        position: relative;   /* Stays relative */
+    .info-right { /* Description block, comes after image */
+        order: 2;
+        position: relative; /* Ensure it's in normal flow */
+        width: 90%;
+        margin: 0 0 15px 0; /* top, right, bottom, left (right/left auto due to align-items:center on parent) */
+        text-align: left;
+        box-sizing: border-box;
+        /* Clear previous attempts at absolute/relative positioning for stacking */
         bottom: auto;
+        left: auto;
         right: auto;
-        left: auto;           /* Remove fixed left offset, rely on margin */
-        max-width: none;      /* Allow full use of width within margins */
-        width: auto;          /* Allow natural width */
-        text-align: left;     /* Stays */
-        margin: 0 15px 10px 15px; /* top, horizontal, bottom margins */
+        max-width: none; /* Let width: 90% control it */
     }
+
+    .info-left { /* Title, author, stats, AI Summary, DeepWiki block, comes after description */
+        order: 3;
+        position: relative; /* Ensure it's in normal flow */
+        width: 90%;
+        margin: 0 0 15px 0; /* top, right, bottom, left */
+        text-align: left;
+        box-sizing: border-box;
+        /* Clear previous attempts at absolute/relative positioning for stacking */
+        bottom: auto;
+        left: auto;
+        max-width: none; /* Let width: 90% control it */
+    }
+
+    /* .info-right::-webkit-scrollbar, .info-right::-webkit-scrollbar-track, .info-right::-webkit-scrollbar-thumb removed as .info-right is not meant to be independently scrollable with this layout */
 
      .info-left h2 { /* Existing rule, keep it */
         font-size: 1.3em;
@@ -369,16 +386,18 @@ body, html {
      .info-left p, .info-right p.repo-description { /* Existing rule, keep it */
         font-size: 0.9em;
     }
-     .ai-summary { /* AI Summary */
-        font-size: 0.8em; /* Keep existing font adjustment */
-        text-align: left;     /* Ensure text alignment */
-        margin: 0 15px 10px 15px; /* top, horizontal, bottom margins */
-        width: auto;
+     .ai-summary { /* Existing rule, its margin should work within the new .info-left width */
+        font-size: 0.8em;
+        text-align: left;
+        margin: 10px 0; /* Adjusted: only top/bottom margin needed as text-align:left handles start. Horizontal handled by parent's padding or width. */
+        /* Original: margin: 0 15px 10px 15px; */
+        width: 100%; /* Take full width of its parent .info-left (which is 90% of screen) */
         max-width: none;
+        box-sizing: border-box; /* Add for consistency */
     }
 
     .share-button {
-        top: 15px;
+        top: 15px; /* Keep its absolute positioning relative to .gittok-item */
         right: 15px;
         width: 28px;
         height: 28px;
