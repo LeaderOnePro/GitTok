@@ -336,71 +336,71 @@ body, html {
         font-size: 0.8em;
     }
     .content-image {
-        width: 85%; /* Increase image width slightly on smaller screens */
-        max-width: 90%; /* Allow it to take more horizontal space */
-        aspect-ratio: unset; /* Allow image to take natural height based on width */
-        height: 45vh; /* Further reduce image height on mobile */
-        background-size: cover; /* Cover might be better than contain on mobile */
+        width: 90%;
+        max-width: 90%;
+        margin-top: -2vh;
     }
 
     .info-left {
-        bottom: 15px; /* Increase bottom spacing slightly */
-        left: 15px; /* Increase side spacing slightly */
-        max-width: 75%; /* Reduce max-width to leave more space */
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+        left: 15px;
+        bottom: 15px;
+        max-width: calc(100% - 30px);
     }
-
-    /* Removed redundant .info-left rule */
 
     .info-right {
-        bottom: 15px; /* Match bottom spacing with left */
-        right: 15px; /* Increase side spacing slightly */
-        max-width: 75%; /* Reduce max-width */
-        /* Add max-height and overflow */
-        max-height: 35vh; /* Limit height (adjust as needed) */
-        overflow-y: auto; /* Add scroll if content exceeds max-height */
-        /* Optional: Style scrollbar for webkit browsers */
-        scrollbar-width: thin; /* Firefox */
-        scrollbar-color: rgba(255,255,255,0.3) transparent; /* Firefox */
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+        position: relative;
+        bottom: auto;
+        right: auto;
+        left: 15px;
+        max-width: calc(100% - 30px);
+        text-align: left;
+        margin-top: 10px;
+        margin-bottom: 15px;
     }
-    /* Optional: Webkit scrollbar styling */
     .info-right::-webkit-scrollbar {
-        width: 5px;
+        display: none;
     }
     .info-right::-webkit-scrollbar-track {
-        background: transparent;
+        display: none;
     }
     .info-right::-webkit-scrollbar-thumb {
-        background-color: rgba(255, 255, 255, 0.3);
-        border-radius: 10px;
-        border: transparent;
+        display: none;
     }
 
      .info-left h2 {
-        font-size: 1.3em; /* Slightly smaller title */
-     }
+        font-size: 1.3em;
+    }
      .info-left p, .info-right p.repo-description {
-        font-size: 0.85em; /* Smaller text */
-     }
+        font-size: 0.9em;
+    }
      .ai-summary {
-         font-size: 0.75em; /* Even smaller summary on mobile */
-         margin-top: 5px;
-     }
-
-    .share-button {
-        top: 15px; /* Reduce top/right spacing */
-        right: 15px;
-        width: 30px; /* Slightly smaller button */
-        height: 30px;
+        font-size: 0.8em;
     }
 
+    .share-button {
+        top: 15px;
+        right: 15px;
+        width: 28px;
+        height: 28px;
+        font-size: 1em;
+    }
      .share-button svg {
         width: 14px;
         height: 14px;
     }
 
+    .deepwiki-btn {
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+
+    .deepwiki-btn img {
+        width: 18px;
+        height: 18px;
+        margin-right: 8px;
+    }
+
     .blurred-background {
-         filter: blur(20px) brightness(0.6); /* Slightly less blur, darker */
+        filter: blur(20px) brightness(0.6);
     }
 }
