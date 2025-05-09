@@ -337,64 +337,65 @@ body, html {
     }
 
     .gittok-item {
-        display: flex; /* Ensure flex display */
+        display: flex;
         flex-direction: column;
-        justify-content: flex-start; /* Content starts at top, margin-top:auto on last item pushes it down */
-        align-items: center; /* Centers children if their width is < 100% of content box */
+        justify-content: flex-start;
+        align-items: center;
         height: 100vh;
         width: 100vw;
-        overflow-y: auto; /* Allow item to scroll if content overflows */
-        position: relative; /* For absolutely positioned children like share button */
-        padding: 70px 15px 15px 15px; /* Top(for fixed controls), Sides, Bottom */
+        /* overflow-y: auto; Removed to prevent item itself from scrolling */
+        position: relative;
+        padding: 80px 15px 15px 15px; /* Increased top padding, rest same */
         box-sizing: border-box;
     }
 
     .content-image {
-        order: 1; /* First item */
-        width: 100%; /* Fill padded parent width */
-        /* max-width: 500px; /* Optional: constrain max width */
-        margin-top: 0; /* Parent padding handles top spacing */
-        margin-bottom: 20px; /* Space below image */
-        flex-shrink: 0; /* Prevent shrinking */
+        order: 1;
+        width: 100%;
+        margin-top: 0;
+        margin-bottom: 15px; /* Slightly reduced margin-bottom */
+        flex-shrink: 0;
     }
 
     .info-right { /* Contains description and AI summary */
-        order: 2; /* Second item */
-        position: relative; /* Ensure in normal flow */
-        width: 100%; /* Fill padded parent width */
-        margin: 0 0 20px 0; /* Space below this block */
+        order: 2;
+        position: relative;
+        width: 100%;
+        margin: 0 0 15px 0; /* Adjusted margin-bottom */
         text-align: left;
         box-sizing: border-box;
-        /* Clear potential absolute positioning remnants */
+        flex-grow: 1; /* Allow this block to grow and take available space */
+        flex-shrink: 1; /* Allow this block to shrink if necessary */
+        overflow-y: auto; /* Allow internal scrolling for long descriptions/summaries */
+        min-height: 0; /* Important for scrollable flex children */
         bottom: auto;
         left: auto;
         right: auto;
         max-width: none;
     }
 
-    .info-right p.repo-description { /* Assuming this class exists for description */
-        margin-bottom: 10px; /* Space between description and AI summary */
+    .info-right p.repo-description {
+        margin-bottom: 10px;
     }
 
-     .ai-summary { /* Styles for AI summary, assuming it's inside .info-right */
+     .ai-summary {
         font-size: 0.8em;
         text-align: left;
-        margin-top: 10px; /* Space above AI summary if no specific p.repo-description rule applies */
-        margin-bottom: 0; /* Bottom margin handled by .info-right's margin-bottom */
+        margin-top: 10px;
+        margin-bottom: 0;
         width: 100%;
         max-width: none;
         box-sizing: border-box;
     }
 
     .info-left { /* Contains title, author, stats, today-info-container */
-        order: 3; /* Third item */
-        position: relative; /* Ensure in normal flow */
-        width: 100%; /* Fill padded parent width */
-        margin: auto 0 0 0; /* margin-top: auto pushes to bottom, other margins 0 */
+        order: 3;
+        position: relative;
+        width: 100%;
+        margin: auto 0 0 0;
         text-align: left;
         box-sizing: border-box;
-        flex-shrink: 0; /* Prevent shrinking */
-        /* Clear potential absolute positioning remnants */
+        flex-shrink: 0; /* Prevent this bottom block from shrinking */
         bottom: auto;
         left: auto;
         max-width: none;
@@ -402,26 +403,25 @@ body, html {
 
      .info-left h2 {
         font-size: 1.3em;
-        margin-bottom: 5px; /* Adjust spacing */
+        margin-bottom: 5px;
     }
-     .info-left p, /* Generic p in info-left */
-     .info-right p.repo-description { /* Already specific */
+     .info-left p,
+     .info-right p.repo-description {
         font-size: 0.9em;
-        line-height: 1.4; /* Improve readability */
+        line-height: 1.4;
     }
-    /* .info-left p needs margin-bottom if there are multiple such paragraphs */
     .info-left .info-author, .info-left .info-stats {
-        margin-bottom: 5px; /* Space between text lines in info-left */
+        margin-bottom: 5px;
     }
 
 
     .share-button {
-        top: 20px; /* Adjusted to be slightly lower than controls if using 70px padding-top on parent */
+        top: 25px; /* Adjusted to be slightly lower considering new 80px padding-top */
         right: 15px;
         width: 28px;
         height: 28px;
         font-size: 1em;
-        z-index: 10; /* Ensure it's above other scrolled content if necessary */
+        z-index: 10;
     }
      .share-button svg {
         width: 14px;
@@ -431,7 +431,7 @@ body, html {
     .deepwiki-btn {
         padding: 10px 15px;
         font-size: 0.9em;
-        margin-top: 10px; /* Add some space above DeepWiki button */
+        margin-top: 10px;
     }
 
     .deepwiki-btn img {
@@ -445,12 +445,12 @@ body, html {
     }
 
     .loading {
-        display: flex; /* Ensure flex is still active for centering .loading-content */
+        display: flex;
         justify-content: center;
         align-items: center;
-        padding-top: 15vh; /* Increased to push loading content further down */
+        padding-top: 15vh;
         box-sizing: border-box;
-        height: 100%; /* Ensure it covers the full viewport area if it's absolutely positioned */
+        height: 100%;
         width: 100%;
     }
 }
