@@ -91,6 +91,9 @@ async function getAiSummary(readmeContent) {
                         content: prompt
                     }
                 ],
+                "search_parameters": {
+                    "mode": "auto"
+                },
                 model: "grok-3-mini-beta",
                 stream: false,
                 temperature: 0.5
