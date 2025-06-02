@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     feedContainer.appendChild(item);
                 });
                 // Setup Intersection Observer after items are added
-                // setupSummaryObserver(); // Temporarily disable AI summary
+                setupSummaryObserver();
             } else {
                 feedContainer.innerHTML = '<div class="gittok-item"><p>未能加载 Trending 项目，或者今天没有项目。</p></div>';
             }
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // AI Summary Placeholder
         const summaryDiv = document.createElement('div');
         summaryDiv.classList.add('ai-summary');
-        summaryDiv.innerHTML = '<p><i>AI 总结功能已暂停。</i></p>'; // Updated placeholder text
+        summaryDiv.innerHTML = '<p><i>AI 总结加载中...</i></p>'; // Restore placeholder text
         infoRight.appendChild(summaryDiv);
 
         // Store repo info on the item for the observer
@@ -240,8 +240,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         observer = new IntersectionObserver(handleIntersection, options);
 
-        // const items = feedContainer.querySelectorAll('.gittok-item:not(.summary-loaded):not(.summary-loading)');
-        // items.forEach(item => observer.observe(item)); // Temporarily disable AI summary
+        const items = feedContainer.querySelectorAll('.gittok-item:not(.summary-loaded):not(.summary-loading)');
+        items.forEach(item => observer.observe(item));
     }
 
     async function handleIntersection(entries, observer) {
@@ -249,47 +249,47 @@ document.addEventListener('DOMContentLoaded', () => {
             if (entry.isIntersecting) {
                 const item = entry.target;
                 // Check if already loading or loaded
-                // if (!item.classList.contains('summary-loading') && !item.classList.contains('summary-loaded')) { // Temporarily disable AI summary
-                //     const author = item.dataset.author;
-                //     const repo = item.dataset.repo;
-                //     if (author && repo) {
-                //         item.classList.add('summary-loading');
-                //         fetchAndDisplaySummary(item, author, repo);
-                //     }
-                //     // Stop observing this item once loading starts
-                //     observer.unobserve(item);
-                // } // Temporarily disable AI summary
+                if (!item.classList.contains('summary-loading') && !item.classList.contains('summary-loaded')) {
+                    const author = item.dataset.author;
+                    const repo = item.dataset.repo;
+                    if (author && repo) {
+                        item.classList.add('summary-loading');
+                        fetchAndDisplaySummary(item, author, repo);
+                    }
+                    // Stop observing this item once loading starts
+                    observer.unobserve(item);
+                }
             }
         });
     }
 
-    // async function fetchAndDisplaySummary(itemElement, author, repo) { // Temporarily disable AI summary
-    //     const summaryPlaceholder = itemElement.querySelector('.ai-summary');
-    //     const summarizeApiUrl = `/api/summarize?author=${encodeURIComponent(author)}&repo=${encodeURIComponent(repo)}`;
+    async function fetchAndDisplaySummary(itemElement, author, repo) {
+        const summaryPlaceholder = itemElement.querySelector('.ai-summary');
+        const summarizeApiUrl = `/api/summarize?author=${encodeURIComponent(author)}&repo=${encodeURIComponent(repo)}`;
 
-    //     try {
-    //         console.log(`Fetching summary for ${author}/${repo}...`);
-    //         const response = await fetch(summarizeApiUrl);
-    //         itemElement.classList.remove('summary-loading'); // Remove loading class regardless of outcome
+        try {
+            console.log(`Fetching summary for ${author}/${repo}...`);
+            const response = await fetch(summarizeApiUrl);
+            itemElement.classList.remove('summary-loading'); // Remove loading class regardless of outcome
 
-    //         if (!response.ok) {
-    //             throw new Error(`API Error: ${response.status}`);
-    //         }
-    //         const data = await response.json();
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`);
+            }
+            const data = await response.json();
 
-    //         if (data.summary) {
-    //              summaryPlaceholder.innerHTML = `<p><strong>AI 总结:</strong> ${data.summary}</p>`;
-    //              itemElement.classList.add('summary-loaded'); // Mark as loaded
-    //         } else {
-    //              summaryPlaceholder.innerHTML = `<p><i>未能生成 AI 总结。</i></p>`;
-    //         }
+            if (data.summary && data.summary !== "Failed to generate summary or summary was empty." && data.summary !== "README is empty or could not be fetched." && data.summary !== "DeepSeek API key not configured.") {
+                 summaryPlaceholder.innerHTML = `<p><strong>AI 总结:</strong> ${data.summary}</p>`;
+                 itemElement.classList.add('summary-loaded'); // Mark as loaded
+            } else {
+                 summaryPlaceholder.innerHTML = `<p><i>未能生成 AI 总结。 (${data.summary || '原因未知'})</i></p>`;
+            }
 
-    //     } catch (error) {
-    //         console.error(`获取 AI 总结失败 (${author}/${repo}):`, error);
-    //         summaryPlaceholder.innerHTML = `<p><i>加载 AI 总结出错。</i></p>`;
-    //          itemElement.classList.remove('summary-loading'); // Ensure loading class is removed on error
-    //     }
-    // } // Temporarily disable AI summary
+        } catch (error) {
+            console.error(`获取 AI 总结失败 (${author}/${repo}):`, error);
+            summaryPlaceholder.innerHTML = `<p><i>加载 AI 总结出错。 (${error.message})</i></p>`;
+             itemElement.classList.remove('summary-loading'); // Ensure loading class is removed on error
+        }
+    }
 
     // --- Event Listeners for Time Range Buttons ---
     timeRangeButtons.forEach(button => {
