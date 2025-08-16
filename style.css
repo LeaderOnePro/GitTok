@@ -150,16 +150,17 @@ body, html {
     margin: 2px 0; /* Adjust vertical spacing */
 }
 
-/* Container for Today Stars and DeepWiki button */
+/* Container for Today Stars and buttons */
 .today-info-container {
     display: flex;
     align-items: center; /* Vertically align items */
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
     margin-top: 5px; /* Space above this line */
+    gap: 8px; /* Add consistent spacing between all items */
 }
 
 .today-stars {
     margin: 0; /* Remove default margin */
-    margin-right: 15px; /* Space between stars and button */
     font-size: 0.95em;
     font-weight: bold; /* Make today's stars bold */
     color: inherit;
@@ -246,6 +247,7 @@ body, html {
     /* Remove margin-left as spacing is handled by the container */
     margin-left: 0;
     margin-top: 0; /* Reset top margin */
+
     padding: 4px 8px; /* Adjust padding */
     background-color: rgba(60, 120, 240, 0.7); /* A distinct blue color */
     color: #fff;
@@ -268,6 +270,30 @@ body, html {
 
 .deepwiki-btn:hover {
     background-color: rgba(80, 140, 255, 0.9); /* Lighter blue on hover */
+}
+
+/* 6. Zread Button Styling */
+.zread-btn {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 0;
+    margin-top: 0;
+    padding: 4px 8px;
+    background-color: rgba(240, 120, 60, 0.7); /* Orange color to distinguish from DeepWiki */
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.85em;
+    font-weight: 500;
+    text-align: center;
+    transition: background-color 0.2s ease;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    vertical-align: middle;
+}
+
+.zread-btn:hover {
+    background-color: rgba(255, 140, 80, 0.9); /* Lighter orange on hover */
 }
 
 /* 6. Loading State Styling */
@@ -432,12 +458,19 @@ body, html {
         padding: 10px 15px;
         font-size: 0.9em;
         margin-top: 10px;
+        margin-right: 10px;
     }
 
     .deepwiki-btn img {
         width: 18px;
         height: 18px;
         margin-right: 8px;
+    }
+
+    .zread-btn {
+        padding: 10px 15px;
+        font-size: 0.9em;
+        margin-top: 10px;
     }
 
     .blurred-background {

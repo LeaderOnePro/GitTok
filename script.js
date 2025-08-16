@@ -129,6 +129,18 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         todayInfoDiv.appendChild(deepWikiButton); // Append button to the Row 3 container
 
+        // Zread Button
+        const zreadButton = document.createElement('button');
+        zreadButton.classList.add('zread-btn');
+        zreadButton.innerHTML = `Zread`;
+        zreadButton.title = '在 Zread 中打开';
+        zreadButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const zreadUrl = `https://zread.ai/${repo.author}/${repo.name.split('/').pop()}`;
+            window.open(zreadUrl, '_blank');
+        });
+        todayInfoDiv.appendChild(zreadButton); // Append button to the Row 3 container
+
         infoLeft.appendChild(todayInfoDiv); // Append Row 3 container to infoLeft
 
         // REMOVE previous individual appends for todayStarsP and deepWikiButton
