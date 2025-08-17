@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Zread Button
         const zreadButton = document.createElement('button');
         zreadButton.classList.add('zread-btn');
-        zreadButton.innerHTML = `Zread`;
+        zreadButton.innerHTML = `<img src="zread.png" alt="Zread"> Zread`;
         zreadButton.title = '在 Zread 中打开';
         zreadButton.addEventListener('click', (e) => {
             e.stopPropagation();

@@ -292,6 +292,12 @@ body, html {
     vertical-align: middle;
 }
 
+.zread-btn img {
+    height: 1em; /* Match icon height roughly to font size */
+    width: auto;
+    margin-right: 5px; /* Space between icon and text */
+}
+
 .zread-btn:hover {
     background-color: rgba(255, 140, 80, 0.9); /* Lighter orange on hover */
 }
@@ -471,6 +477,12 @@ body, html {
         padding: 10px 15px;
         font-size: 0.9em;
         margin-top: 10px;
+    }
+
+    .zread-btn img {
+        width: 18px;
+        height: 18px;
+        margin-right: 8px;
     }
 
     .blurred-background {
