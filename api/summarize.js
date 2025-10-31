@@ -45,7 +45,7 @@ async function fetchReadmeContent(author, repo) {
     return null; // README not found on common branches
 }
 
-// --- Helper to get AI Summary using MiniMax ---
+// --- Helper to get AI Summary using LongCat ---
 async function getAiSummary(readmeContent) {
 
     // Check the cache first
@@ -54,13 +54,13 @@ async function getAiSummary(readmeContent) {
         return summaryCache.get(readmeContent);
     }
 
-    console.log("Cache miss. Fetching new summary from MiniMax API");
+    console.log("Cache miss. Fetching new summary from LongCat API");
 
     if (!readmeContent || readmeContent.trim() === '') {
         return "README is empty or could not be fetched.";
     }
-    if (!process.env.MINIMAX_API_KEY) { // Use MiniMax API Key
-        return "MiniMax API key not configured.";
+    if (!process.env.LONGCAT_API_KEY) { // Use LongCat API Key
+        return "LongCat API key not configured.";
     }
 
     // Simple truncation to avoid overly long prompts (adjust length as needed)
@@ -72,12 +72,12 @@ async function getAiSummary(readmeContent) {
     const prompt = `请根据以下 GitHub 项目的 README 内容，用简体中文提供一个简洁的一句话总结:\n\n---\n\n${truncatedContent}\n\n---\n\n中文总结:`;
 
     try {
-        console.log(`Requesting summary from MiniMax for README (length: ${truncatedContent.length})...`);
-        const response = await fetch('https://api.minimaxi.com/v1/chat/completions', { // MiniMax API endpoint
+        console.log(`Requesting summary from LongCat for README (length: ${truncatedContent.length})...`);
+        const response = await fetch('https://api.longcat.chat/openai/v1/chat/completions', { // LongCat API endpoint
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.MINIMAX_API_KEY}` // Use MiniMax API Key
+                'Authorization': `Bearer ${process.env.LONGCAT_API_KEY}` // Use LongCat API Key
             },
             body: JSON.stringify({
                 messages: [
@@ -90,18 +90,18 @@ async function getAiSummary(readmeContent) {
                         content: prompt
                     }
                 ],
-                model: "MiniMax-M2", // Recommended model for general tasks
+                model: "LongCat-Flash-Chat", // Recommended model for general tasks
                 stream: false,
                 temperature: 0.5
             })
         });
 
         const data = await response.json();
-        // MiniMax API might have a slightly different response structure for errors or empty content.
+        // LongCat API might have a slightly different response structure for errors or empty content.
         // Adjust based on actual API response if needed.
         let summary = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content ? data.choices[0].message.content.trim() : null;
         
-        // 过滤 MiniMax-M2 的 CoT（思考链）内容
+        // 过滤 LongCat-Flash-Chat 的 CoT（思考链）内容
         if (summary) {
             // 移除 <think>...</think> 标签及其内容
             summary = summary.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
@@ -116,7 +116,7 @@ async function getAiSummary(readmeContent) {
 
         return summary || "Failed to generate summary or summary was empty.";
     } catch (error) {
-        console.error("Error calling MiniMax API:", error);
+        console.error("Error calling LongCat API:", error);
         return `Error generating summary: ${error.message}`;
     }
 }
