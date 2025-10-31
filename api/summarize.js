@@ -45,7 +45,7 @@ async function fetchReadmeContent(author, repo) {
     return null; // README not found on common branches
 }
 
-// --- Helper to get AI Summary using DeepSeek ---
+// --- Helper to get AI Summary using MiniMax ---
 async function getAiSummary(readmeContent) {
 
     // Check the cache first
@@ -54,13 +54,13 @@ async function getAiSummary(readmeContent) {
         return summaryCache.get(readmeContent);
     }
 
-    console.log("Cache miss. Fetching new summary from DeepSeek API");
+    console.log("Cache miss. Fetching new summary from MiniMax API");
 
     if (!readmeContent || readmeContent.trim() === '') {
         return "README is empty or could not be fetched.";
     }
-    if (!process.env.DEEPSEEK_API_KEY) { // Use DeepSeek API Key
-        return "DeepSeek API key not configured.";
+    if (!process.env.MINIMAX_API_KEY) { // Use MiniMax API Key
+        return "MiniMax API key not configured.";
     }
 
     // Simple truncation to avoid overly long prompts (adjust length as needed)
@@ -72,12 +72,12 @@ async function getAiSummary(readmeContent) {
     const prompt = `请根据以下 GitHub 项目的 README 内容，用简体中文提供一个简洁的一句话总结:\n\n---\n\n${truncatedContent}\n\n---\n\n中文总结:`;
 
     try {
-        console.log(`Requesting summary from DeepSeek for README (length: ${truncatedContent.length})...`);
-        const response = await fetch('https://api.deepseek.com/chat/completions', { // DeepSeek API endpoint
+        console.log(`Requesting summary from MiniMax for README (length: ${truncatedContent.length})...`);
+        const response = await fetch('https://api.minimaxi.com/v1/chat/completions', { // MiniMax API endpoint
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}` // Use DeepSeek API Key
+                'Authorization': `Bearer ${process.env.MINIMAX_API_KEY}` // Use MiniMax API Key
             },
             body: JSON.stringify({
                 messages: [
@@ -90,14 +90,14 @@ async function getAiSummary(readmeContent) {
                         content: prompt
                     }
                 ],
-                model: "deepseek-chat", // Recommended model for general tasks
+                model: "MiniMax-M2", // Recommended model for general tasks
                 stream: false,
                 temperature: 0.5
             })
         });
 
         const data = await response.json();
-        // DeepSeek API might have a slightly different response structure for errors or empty content.
+        // MiniMax API might have a slightly different response structure for errors or empty content.
         // Adjust based on actual API response if needed.
         const summary = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content ? data.choices[0].message.content.trim() : null;
         console.log("Received summary:", summary);
@@ -109,7 +109,7 @@ async function getAiSummary(readmeContent) {
 
         return summary || "Failed to generate summary or summary was empty.";
     } catch (error) {
-        console.error("Error calling DeepSeek API:", error);
+        console.error("Error calling MiniMax API:", error);
         return `Error generating summary: ${error.message}`;
     }
 }

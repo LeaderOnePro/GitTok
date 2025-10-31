@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const data = await response.json();
 
-            if (data.summary && data.summary !== "Failed to generate summary or summary was empty." && data.summary !== "README is empty or could not be fetched." && data.summary !== "DeepSeek API key not configured.") {
+            if (data.summary && data.summary !== "Failed to generate summary or summary was empty." && data.summary !== "README is empty or could not be fetched." && data.summary !== "MiniMax API key not configured.") {
                  summaryPlaceholder.innerHTML = `<p><strong>AI 总结:</strong> ${data.summary}</p>`;
                  itemElement.classList.add('summary-loaded'); // Mark as loaded
             } else {
