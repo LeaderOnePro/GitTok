@@ -99,7 +99,17 @@ async function getAiSummary(readmeContent) {
         const data = await response.json();
         // MiniMax API might have a slightly different response structure for errors or empty content.
         // Adjust based on actual API response if needed.
-        const summary = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content ? data.choices[0].message.content.trim() : null;
+        let summary = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content ? data.choices[0].message.content.trim() : null;
+        
+        // 过滤 MiniMax-M2 的 CoT（思考链）内容
+        if (summary) {
+            // 移除 <think>...</think> 标签及其内容
+            summary = summary.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+            // 移除其他可能的 CoT 标记
+            summary = summary.replace(/【思考】[\s\S]*?【\/思考】/gi, '').trim();
+            summary = summary.replace(/\[思考过程\][\s\S]*?\[\/思考过程\]/gi, '').trim();
+        }
+        
         console.log("Received summary:", summary);
 
         // Store the new summary in the cache
