@@ -105,9 +105,6 @@ async function getAiSummary(readmeContent) {
         if (summary) {
             // 移除 <think>...</think> 标签及其内容
             summary = summary.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
-            // 移除其他可能的 CoT 标记
-            summary = summary.replace(/【思考】[\s\S]*?【\/思考】/gi, '').trim();
-            summary = summary.replace(/\[思考过程\][\s\S]*?\[\/思考过程\]/gi, '').trim();
         }
         
         console.log("Received summary:", summary);
