@@ -101,7 +101,7 @@ async function getAiSummary(readmeContent) {
         // Adjust based on actual API response if needed.
         let summary = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content ? data.choices[0].message.content.trim() : null;
         
-        // 过滤 LongCat-Flash-Lite 的 CoT（思考链）内容
+        // 过滤 LLM 的 CoT（思考链）内容
         if (summary) {
             // 移除 <think>...</think> 标签及其内容
             summary = summary.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
