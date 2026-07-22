@@ -17,9 +17,6 @@ const allowCors = fn => async (req, res) => {
     return await fn(req, res);
 };
 
-// --- Simple In-Memory Cache ---
-const summaryCache = new Map();
-
 // --- Helper to fetch README ---
 async function fetchReadmeContent(author, repo) {
     const branches = ['main', 'master']; // Common default branches
@@ -47,20 +44,11 @@ async function fetchReadmeContent(author, repo) {
 
 // --- Helper to get AI Summary using LongCat ---
 async function getAiSummary(readmeContent) {
-
-    // Check the cache first
-    if (summaryCache.has(readmeContent)) {
-        console.log("Cache hit! Returning cached summary.");
-        return summaryCache.get(readmeContent);
-    }
-
-    console.log("Cache miss. Fetching new summary from LongCat API");
-
     if (!readmeContent || readmeContent.trim() === '') {
-        return "README is empty or could not be fetched.";
+        return { ok: false, summary: "README is empty or could not be fetched." };
     }
     if (!process.env.LONGCAT_API_KEY) { // Use LongCat API Key
-        return "LongCat API key not configured.";
+        return { ok: false, summary: "LongCat API key not configured." };
     }
 
     // Simple truncation to avoid overly long prompts (adjust length as needed)
@@ -90,7 +78,7 @@ async function getAiSummary(readmeContent) {
                         content: prompt
                     }
                 ],
-                model: "LongCat-Flash-Lite", // Recommended model for general tasks
+                model: "LongCat-2.0", // 主模型
                 stream: false,
                 temperature: 0.5
             })
@@ -109,15 +97,13 @@ async function getAiSummary(readmeContent) {
         
         console.log("Received summary:", summary);
 
-        // Store the new summary in the cache
         if (summary) {
-            summaryCache.set(readmeContent, summary);
+            return { ok: true, summary };
         }
-
-        return summary || "Failed to generate summary or summary was empty.";
+        return { ok: false, summary: "Failed to generate summary or summary was empty." };
     } catch (error) {
         console.error("Error calling LongCat API:", error);
-        return `Error generating summary: ${error.message}`;
+        return { ok: false, summary: `Error generating summary: ${error.message}` };
     }
 }
 
@@ -133,7 +119,16 @@ async function handler(req, res) {
 
     try {
         const readmeContent = await fetchReadmeContent(author, repo);
-        const summary = await getAiSummary(readmeContent); // Pass null if no README
+        const { ok, summary } = await getAiSummary(readmeContent);
+
+        // 只缓存成功的总结：让 Vercel CDN 按 URL(?author&repo) 缓存响应，跨实例/用户共享、抗冷启动。
+        // 边缘缓存 1 天，之后 7 天内可先返回旧结果再后台刷新；上游出错时也继续用旧结果。
+        // 失败结果不缓存，以便下次重试（如上游限流、README 暂时抓取失败）。
+        if (ok) {
+            res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=604800, stale-if-error=604800');
+        } else {
+            res.setHeader('Cache-Control', 'no-store');
+        }
 
         res.status(200).json({ summary });
 

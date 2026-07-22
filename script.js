@@ -212,31 +212,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // 5. DeepWiki Button (This block is duplicated and should be removed)
-        /*
-        const deepWikiButton = document.createElement('button');
-        deepWikiButton.classList.add('deepwiki-btn'); // Add class for styling
-        deepWikiButton.innerHTML = 'DW'; // Or use an icon/full text
-        deepWikiButton.title = '在 DeepWiki 中打开'; // Updated title
-        deepWikiButton.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevent triggering image click
-            // Construct DeepWiki URL by replacing github.com with deepwiki.com
-            let deepWikiUrl = repo.url; // Start with the original GitHub URL
-            if (deepWikiUrl && deepWikiUrl.includes('github.com')) {
-                deepWikiUrl = deepWikiUrl.replace('github.com', 'deepwiki.com');
-            } else {
-                // Fallback or handle cases where the URL is not a standard GitHub URL
-                console.warn('Could not generate DeepWiki URL from:', repo.url);
-                // Optional: Fallback to search if direct replacement fails
-                const repoNameForSearch = encodeURIComponent(repo.name.split('/').pop());
-                deepWikiUrl = `https://deepwiki.com/search?q=${repoNameForSearch}`; // Use .com for search as well
-            }
-            window.open(deepWikiUrl, '_blank');
-        });
-        // Append to infoRight or another suitable container
-        // infoRight.appendChild(deepWikiButton); // REMOVED from here
-        */
-
         return itemDiv;
     }
 
