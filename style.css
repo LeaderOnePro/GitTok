@@ -262,26 +262,33 @@ html, body {
     top: 30px;
     right: 30px;
     z-index: 3;
-    padding: 5px 10px;
-    background-color: rgba(255, 255, 255, 0.15);
-    color: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 30px;
-    height: 30px;
-    font-size: 1.1em;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.share-button svg {
+    width: 17px;
+    height: 17px;
+    display: block;
+    pointer-events: none;   /* clicks always resolve to the button */
 }
 
 .share-button:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    transform: scale(1.1);
+    background-color: rgba(255, 255, 255, 0.28);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.08);
 }
 
 .deepwiki-btn,
@@ -518,10 +525,13 @@ html, body {
     .share-button {
         top: max(25px, env(safe-area-inset-top));
         right: 15px;
-        width: 28px;
-        height: 28px;
-        font-size: 1em;
+        width: 34px;
+        height: 34px;
         z-index: 10;
+    }
+    .share-button svg {
+        width: 16px;
+        height: 16px;
     }
 
     .deepwiki-btn,

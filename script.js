@@ -12,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let inFlightController = null;  // AbortController for the trending fetch
     const trendingCache = new Map(); // since -> repos[]
 
+    // Inline monochrome icons (inherit the button color via currentColor)
+    const SHARE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>';
+    const CHECK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
+
     // ============================================================
     // Helpers
     // ============================================================
@@ -89,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
 
             <button type="button" class="share-button" data-action="share"
-                    title="分享 GitTok 项目" aria-label="分享 GitTok">🔗</button>
+                    title="分享 GitTok 项目" aria-label="分享 GitTok">${SHARE_ICON}</button>
         `;
     }
 
@@ -369,7 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 await navigator.clipboard.writeText(shareUrl);
                 const original = button.innerHTML;
-                button.innerHTML = '✅';
+                button.innerHTML = CHECK_ICON;
                 setTimeout(() => { button.innerHTML = original; }, 1500);
             } catch (err) {
                 console.error('无法复制链接:', err);
