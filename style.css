@@ -1,104 +1,138 @@
-body, html {
+/* ============================================================
+   Base / Full-screen layout
+   ============================================================ */
+html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow-y: hidden; /* Hide vertical scrollbar on body/html */
-    overflow-x: hidden; /* Hide horizontal scrollbar on body/html */
+    overflow: hidden;            /* No scrolling on the document itself */
+    overscroll-behavior: none;   /* Prevent mobile rubber-banding / scroll chaining */
     font-family: sans-serif;
-    background-color: #26263a; /* Add dark background to prevent white flash */
-    color: #fff; /* Default text color back to white */
+    background-color: #26263a;   /* Dark background to prevent white flash */
+    color: #fff;
 }
 
-/* Controls Container */
+/* ============================================================
+   Controls (time range)
+   ============================================================ */
 .controls {
     position: fixed;
-    top: 20px;
+    top: max(20px, env(safe-area-inset-top));
     left: 50%;
     transform: translateX(-50%);
     z-index: 10;
-    background-color: rgba(0, 0, 0, 0.1); /* Very subtle dark background */
-    padding: 4px; /* Add slight padding inside */
-    border-radius: 20px; /* Keep rounded container */
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 4px;
+    border-radius: 20px;
     display: flex;
-    gap: 4px; /* Add small gap between buttons */
-    box-shadow: none; /* Remove shadow */
-    overflow: visible; /* Allow potential hover effects outside bounds */
-    backdrop-filter: blur(3px); /* Subtle blur */
+    gap: 4px;
+    backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
 }
 
-/* Time Range Buttons */
 .time-range-btn {
-    padding: 6px 14px; /* Adjust padding */
-    background-color: transparent; /* Transparent by default */
-    color: rgba(255, 255, 255, 0.7); /* Semi-transparent white text */
+    padding: 6px 14px;
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.7);
     border: none;
-    border-radius: 16px; /* Rounded corners for individual buttons */
+    border-radius: 16px;
     cursor: pointer;
     font-size: 0.85em;
     font-weight: 500;
     transition: background-color 0.2s ease, color 0.2s ease;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Add shadow for readability */
-    border-right: none; /* Remove separator */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* Remove separator from the last button (already removed border-right) */
-/* .time-range-btn:last-child { ... } */
-
-
 .time-range-btn:hover {
-    background-color: rgba(255, 255, 255, 0.1); /* Subtle white highlight on hover */
+    background-color: rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.9);
 }
 
 .time-range-btn.active {
-    background-color: rgba(255, 255, 255, 0.2); /* Slightly more opaque white for active */
-    color: #fff; /* Fully white text for active */
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
     font-weight: 600;
 }
 
+/* ============================================================
+   Scroll progress pill ( "3 / 25" )
+   ============================================================ */
+.scroll-progress {
+    position: fixed;
+    top: max(18px, env(safe-area-inset-top));
+    left: max(18px, env(safe-area-inset-left));
+    z-index: 10;
+    padding: 4px 10px;
+    border-radius: 12px;
+    background-color: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.8em;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
 
+.scroll-progress.visible {
+    opacity: 1;
+}
+
+/* ============================================================
+   Feed + Items (TikTok-style vertical snap)
+   ============================================================ */
 .gittok-feed {
-    height: 100vh; /* 占满整个视口高度 */
-    width: 100vw; /* 占满整个视口宽度 */
-    overflow-y: scroll; /* 允许垂直滚动 */
-    scroll-snap-type: y mandatory; /* 强制滚动捕捉到项目 */
-    -webkit-overflow-scrolling: touch; /* 在移动设备上启用平滑滚动 */
+    height: 100vh;               /* Fallback for browsers without dvh */
+    height: 100dvh;              /* Dynamic viewport height: no mobile toolbar jump */
+    width: 100%;                 /* 100% (not 100vw) so the scrollbar never causes x-overflow */
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    /* Hide the scrollbar entirely — a reel-style feed shouldn't show one */
+    scrollbar-width: none;             /* Firefox */
+    -ms-overflow-style: none;          /* IE / old Edge */
+}
+.gittok-feed::-webkit-scrollbar {      /* Chrome / Safari / Edge */
+    width: 0;
+    height: 0;
+    display: none;
 }
 
 .gittok-item {
     height: 100vh;
-    width: 100vw;
+    height: 100dvh;
+    width: 100%;
     scroll-snap-align: start;
-    position: relative; /* Crucial for absolute positioning of children */
-    overflow: hidden; /* Prevent content overflow */
+    scroll-snap-stop: always;    /* One card per swipe — never skip several */
+    position: relative;
+    overflow: hidden;
     display: flex;
-    justify-content: center; /* Center the image horizontally */
-    align-items: center; /* Keep vertical centering for the flex container */
+    justify-content: center;
+    align-items: center;
     box-sizing: border-box;
-    /* background-color: transparent; /* Ensure item itself has no background */
 }
 
-/* 0. Blurred Background Layer */
+/* 0. Blurred background layer */
 .blurred-background {
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background-size: cover;
     background-position: center center;
-    filter: blur(25px) brightness(0.7); /* Adjust blur and brightness */
-    transform: scale(1.1); /* Slightly scale up to avoid edge artifacts */
-    z-index: 0; /* Behind everything */
+    filter: blur(25px) brightness(0.7);
+    transform: scale(1.1);       /* Scale up to avoid blurred edge artifacts */
+    z-index: 0;
 }
 
-/* 1. Content Image (Centered) */
+/* 1. Content image (centered, clickable link) */
 .content-image {
+    display: block;
     position: relative;
     width: 60%;
     max-width: 800px;
-    height: auto;
     aspect-ratio: 16 / 9;
     background-size: contain;
     background-repeat: no-repeat;
@@ -108,126 +142,137 @@ body, html {
     transition: transform 0.3s ease;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     border-radius: 8px;
-    margin-top: -5vh; /* Move image slightly up from true center */
+    margin-top: -5vh;            /* Nudge up from true center */
 }
 
 .content-image:hover {
     transform: scale(1.03);
 }
 
-/* Remove overlays and content-area */
+.content-image:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 4px;
+}
 
-/* 2. Info Blocks Positioning (Directly within .gittok-item) */
+/* ============================================================
+   Info blocks
+   ============================================================ */
 .info-left {
     position: absolute;
-    bottom: 30px; /* Adjust spacing */
-    left: 30px; /* Adjust spacing */
-    z-index: 2; /* Above content image */
+    bottom: 30px;
+    left: 30px;
+    z-index: 2;
     max-width: 50%;
-    color: #fff; /* White text */
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); /* Stronger shadow for contrast */
+    color: #fff;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
 }
 
 .info-right {
     position: absolute;
-    bottom: 30px; /* Adjust spacing */
-    right: 30px; /* Adjust spacing */
-    z-index: 2; /* Above content image */
+    bottom: 30px;
+    right: 30px;
+    z-index: 2;
     max-width: 40%;
     text-align: right;
-    color: #eee; /* Slightly off-white description */
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); /* Stronger shadow */
+    color: #eee;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8);
 }
 
-/* Styling for specific info lines if needed */
-.info-author {
-    /* Example: Slightly smaller font for author */
-    /* font-size: 0.9em; */
-    margin: 2px 0; /* Adjust vertical spacing */
-}
-
+.info-author,
 .info-stats {
-    margin: 2px 0; /* Adjust vertical spacing */
+    margin: 2px 0;
 }
 
-/* Container for Today Stars and buttons */
+/* Language color dot (uses languageColor from the API) */
+.lang-dot {
+    display: inline-block;
+    width: 0.7em;
+    height: 0.7em;
+    border-radius: 50%;
+    margin-right: 4px;
+    vertical-align: middle;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
 .today-info-container {
     display: flex;
-    align-items: center; /* Vertically align items */
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
-    margin-top: 5px; /* Space above this line */
-    gap: 8px; /* Add consistent spacing between all items */
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 5px;
+    gap: 8px;
 }
 
 .today-stars {
-    margin: 0; /* Remove default margin */
+    margin: 0;
     font-size: 0.95em;
-    font-weight: bold; /* Make today's stars bold */
+    font-weight: bold;
     color: inherit;
 }
 
-/* 3. Text Styling within Info Blocks */
-.info-left h2, .info-left p, .info-right p {
-    margin: 4px 0; /* Adjust spacing */
-    color: inherit; /* Inherit color from parent (.info-left/.info-right) */
+/* Text styling within info blocks */
+.info-left h2,
+.info-left p,
+.info-right p {
+    margin: 4px 0;
+    color: inherit;
 }
 
 .info-left h2 {
     font-size: 1.6em;
     margin-bottom: 8px;
     font-weight: bold;
-    color: #fff; /* White title */
+    color: #fff;
 }
-
-/* Remove .info-left a styling */
 
 .info-left p {
     font-size: 0.95em;
 }
 
-.info-right p.repo-description { /* Target only the description paragraph */
+.info-right p.repo-description {
     font-size: 0.95em;
-    margin-bottom: 8px; /* Add space below description */
+    margin-bottom: 8px;
 }
 
 .ai-summary {
-    margin-top: 8px; /* Add space above summary */
-    font-size: 0.85em; /* Smaller font for summary */
-    color: #ddd; /* Slightly different color for summary */
-    font-style: italic; /* Italicize summary text */
+    margin-top: 8px;
+    font-size: 0.85em;
+    color: #ddd;
+    font-style: italic;
     opacity: 0.9;
 }
 
 .ai-summary p {
-    margin: 0; /* Reset paragraph margin inside summary */
-    font-size: inherit; /* Inherit size */
-    color: inherit; /* Inherit color */
-    font-style: inherit; /* Inherit style */
+    margin: 0;
+    font-size: inherit;
+    color: inherit;
+    font-style: inherit;
 }
 
-.ai-summary strong { /* Style the "AI 总结:" part */
+.ai-summary strong {
     font-style: normal;
     font-weight: bold;
     color: #fff;
 }
 
-/* 4. Share Button Styling */
+/* ============================================================
+   Buttons
+   ============================================================ */
 .share-button {
     position: absolute;
-    top: 30px; /* Adjust spacing */
-    right: 30px; /* Adjust spacing */
-    z-index: 3; /* Above everything else */
+    top: 30px;
+    right: 30px;
+    z-index: 3;
     padding: 5px 10px;
-    background-color: rgba(255, 255, 255, 0.15); /* Semi-transparent white */
-    color: #fff; /* White icon */
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #fff;
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 30px; /* Fixed width */
-    height: 30px; /* Fixed height */
+    width: 30px;
+    height: 30px;
     font-size: 1.1em;
     transition: background-color 0.2s ease, transform 0.2s ease;
     backdrop-filter: blur(2px);
@@ -239,47 +284,11 @@ body, html {
     transform: scale(1.1);
 }
 
-/* 5. DeepWiki Button Styling */
-.deepwiki-btn {
-    /* Position it inline within the container */
-    display: inline-flex; /* Align icon and text */
-    align-items: center; /* Vertically center icon and text */
-    /* Remove margin-left as spacing is handled by the container */
-    margin-left: 0;
-    margin-top: 0; /* Reset top margin */
-
-    padding: 4px 8px; /* Adjust padding */
-    background-color: rgba(60, 120, 240, 0.7); /* A distinct blue color */
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.85em; /* Slightly larger font */
-    font-weight: 500; /* Normal weight */
-    text-align: center;
-    transition: background-color 0.2s ease;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-    vertical-align: middle; /* Align button vertically with surrounding text */
-}
-
-.deepwiki-btn img {
-    height: 1em; /* Match icon height roughly to font size */
-    width: auto;
-    margin-right: 5px; /* Space between icon and text */
-}
-
-.deepwiki-btn:hover {
-    background-color: rgba(80, 140, 255, 0.9); /* Lighter blue on hover */
-}
-
-/* 6. Zread Button Styling */
+.deepwiki-btn,
 .zread-btn {
     display: inline-flex;
     align-items: center;
-    margin-left: 0;
-    margin-top: 0;
     padding: 4px 8px;
-    background-color: rgba(240, 120, 60, 0.7); /* Orange color to distinguish from DeepWiki */
     color: #fff;
     border: none;
     border-radius: 5px;
@@ -292,48 +301,66 @@ body, html {
     vertical-align: middle;
 }
 
+.deepwiki-btn img,
 .zread-btn img {
-    height: 1em; /* Match icon height roughly to font size */
+    height: 1em;
     width: auto;
-    margin-right: 5px; /* Space between icon and text */
+    margin-right: 5px;
 }
 
+.deepwiki-btn {
+    background-color: rgba(60, 120, 240, 0.7);   /* Blue */
+}
+.deepwiki-btn:hover {
+    background-color: rgba(80, 140, 255, 0.9);
+}
+
+.zread-btn {
+    background-color: rgba(240, 120, 60, 0.7);   /* Orange */
+}
 .zread-btn:hover {
-    background-color: rgba(255, 140, 80, 0.9); /* Lighter orange on hover */
+    background-color: rgba(255, 140, 80, 0.9);
 }
 
-/* 6. Loading State Styling */
+/* Shared keyboard focus ring */
+.share-button:focus-visible,
+.deepwiki-btn:focus-visible,
+.zread-btn:focus-visible,
+.time-range-btn:focus-visible {
+    outline: 2px solid #fff;
+    outline-offset: 2px;
+}
+
+/* ============================================================
+   Loading state + skeleton
+   ============================================================ */
 .loading {
-    /* Ensure loading covers the entire item */
     height: 100%;
     width: 100%;
     position: absolute;
-    top: 0;
-    left: 0;
-    display: flex; /* Use flex to center content */
+    inset: 0;
+    display: flex;
     justify-content: center;
     align-items: center;
-    /* Keep the blurred gradient background or a simple dark one */
     background: linear-gradient(135deg, rgba(50, 50, 80, 0.8) 0%, rgba(30, 30, 50, 0.8) 100%);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    z-index: 5; /* Ensure it's above other item content if needed */
+    z-index: 5;
     color: #fff;
 }
 
 .loading-content {
     display: flex;
-    flex-direction: column; /* Stack icon and text vertically */
+    flex-direction: column;
     align-items: center;
     text-align: center;
 }
 
 .octocat-spinner {
-    width: 64px; /* Adjust size as needed */
+    width: 64px;
     height: 64px;
-    fill: rgba(255, 255, 255, 0.8); /* Semi-transparent white */
-    margin-bottom: 15px; /* Space between icon and text */
-    /* Optional: Add a subtle animation */
+    fill: rgba(255, 255, 255, 0.8);
+    margin-bottom: 15px;
     animation: octocat-pulse 1.5s ease-in-out infinite alternate;
 }
 
@@ -343,23 +370,69 @@ body, html {
     margin: 0;
 }
 
-/* Optional pulse animation for Octocat */
 @keyframes octocat-pulse {
-    from {
-        opacity: 0.7;
-        transform: scale(1);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1.05);
-    }
+    from { opacity: 0.7; transform: scale(1); }
+    to   { opacity: 1;   transform: scale(1.05); }
 }
 
+/* Skeleton placeholder card (shown while the first fetch is in flight) */
+.gittok-item.skeleton {
+    flex-direction: column;
+}
 
-/* Responsive Adjustments */
+.skeleton-box {
+    position: relative;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+}
+
+.skeleton-box::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0,
+        rgba(255, 255, 255, 0.12) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    animation: skeleton-shimmer 1.4s infinite;
+}
+
+.skeleton-image {
+    width: 60%;
+    max-width: 800px;
+    aspect-ratio: 16 / 9;
+    margin-top: -5vh;
+}
+
+.skeleton-lines {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    width: 40%;
+}
+
+.skeleton-line {
+    height: 14px;
+    margin: 10px 0;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+}
+.skeleton-line.short { width: 40%; }
+.skeleton-line.medium { width: 70%; }
+
+@keyframes skeleton-shimmer {
+    100% { transform: translateX(100%); }
+}
+
+/* ============================================================
+   Responsive (<= 768px)
+   ============================================================ */
 @media (max-width: 768px) {
     .controls {
-        top: 15px;
         padding: 3px;
         gap: 3px;
     }
@@ -369,15 +442,10 @@ body, html {
     }
 
     .gittok-item {
-        display: flex;
         flex-direction: column;
         justify-content: flex-start;
         align-items: center;
-        height: 100vh;
-        width: 100vw;
-        /* overflow-y: auto; Removed to prevent item itself from scrolling */
-        position: relative;
-        padding: 80px 15px 15px 15px; /* Increased top padding, rest same */
+        padding: 80px 15px calc(15px + env(safe-area-inset-bottom)) 15px;
         box-sizing: border-box;
     }
 
@@ -385,21 +453,21 @@ body, html {
         order: 1;
         width: 100%;
         margin-top: 0;
-        margin-bottom: 15px; /* Slightly reduced margin-bottom */
+        margin-bottom: 15px;
         flex-shrink: 0;
     }
 
-    .info-right { /* Contains description and AI summary */
+    .info-right {
         order: 2;
         position: relative;
         width: 100%;
-        margin: 0 0 15px 0; /* Adjusted margin-bottom */
+        margin: 0 0 15px 0;
         text-align: left;
         box-sizing: border-box;
-        flex-grow: 1; /* Allow this block to grow and take available space */
-        flex-shrink: 1; /* Allow this block to shrink if necessary */
-        overflow-y: auto; /* Allow internal scrolling for long descriptions/summaries */
-        min-height: 0; /* Important for scrollable flex children */
+        flex-grow: 1;
+        flex-shrink: 1;
+        overflow-y: auto;
+        min-height: 0;
         bottom: auto;
         left: auto;
         right: auto;
@@ -410,7 +478,7 @@ body, html {
         margin-bottom: 10px;
     }
 
-     .ai-summary {
+    .ai-summary {
         font-size: 0.8em;
         text-align: left;
         margin-top: 10px;
@@ -420,65 +488,50 @@ body, html {
         box-sizing: border-box;
     }
 
-    .info-left { /* Contains title, author, stats, today-info-container */
+    .info-left {
         order: 3;
         position: relative;
         width: 100%;
         margin: auto 0 0 0;
         text-align: left;
         box-sizing: border-box;
-        flex-shrink: 0; /* Prevent this bottom block from shrinking */
+        flex-shrink: 0;
         bottom: auto;
         left: auto;
         max-width: none;
     }
 
-     .info-left h2 {
+    .info-left h2 {
         font-size: 1.3em;
         margin-bottom: 5px;
     }
-     .info-left p,
-     .info-right p.repo-description {
+    .info-left p,
+    .info-right p.repo-description {
         font-size: 0.9em;
         line-height: 1.4;
     }
-    .info-left .info-author, .info-left .info-stats {
+    .info-left .info-author,
+    .info-left .info-stats {
         margin-bottom: 5px;
     }
 
-
     .share-button {
-        top: 25px; /* Adjusted to be slightly lower considering new 80px padding-top */
+        top: max(25px, env(safe-area-inset-top));
         right: 15px;
         width: 28px;
         height: 28px;
         font-size: 1em;
         z-index: 10;
     }
-     .share-button svg {
-        width: 14px;
-        height: 14px;
-    }
 
-    .deepwiki-btn {
-        padding: 10px 15px;
-        font-size: 0.9em;
-        margin-top: 10px;
-        margin-right: 10px;
-    }
-
-    .deepwiki-btn img {
-        width: 18px;
-        height: 18px;
-        margin-right: 8px;
-    }
-
+    .deepwiki-btn,
     .zread-btn {
         padding: 10px 15px;
         font-size: 0.9em;
         margin-top: 10px;
     }
 
+    .deepwiki-btn img,
     .zread-btn img {
         width: 18px;
         height: 18px;
@@ -489,13 +542,18 @@ body, html {
         filter: blur(20px) brightness(0.6);
     }
 
-    .loading {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding-top: 15vh;
-        box-sizing: border-box;
-        height: 100%;
+    /* On mobile the skeleton lines follow the same column flow */
+    .skeleton-image {
+        order: 1;
         width: 100%;
+        margin-top: 0;
+        margin-bottom: 15px;
+    }
+    .skeleton-lines {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        width: 100%;
+        margin-top: auto;
     }
 }

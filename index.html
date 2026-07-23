@@ -2,8 +2,24 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>GitTok - 像刷 TikTok 一样刷 GitHub Trending</title>
+    <meta name="description" content="像刷 TikTok 一样浏览 GitHub Trending —— 全屏、沉浸式地发现热门开源项目，含 AI 中文一句话总结。">
+    <meta name="theme-color" content="#26263a">
+
+    <!-- Open Graph / 分享预览卡片 -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="GitTok - 像刷 TikTok 一样刷 GitHub Trending">
+    <meta property="og:description" content="全屏、沉浸式地浏览 GitHub Trending 热门开源项目，含 AI 中文总结。">
+    <meta property="og:image" content="https://raw.githubusercontent.com/LeaderOnePro/GitTok/master/screenshot.png">
+    <meta property="og:url" content="https://github.com/LeaderOnePro/GitTok">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="GitTok - 像刷 TikTok 一样刷 GitHub Trending">
+    <meta name="twitter:description" content="全屏、沉浸式地浏览 GitHub Trending 热门开源项目，含 AI 中文总结。">
+    <meta name="twitter:image" content="https://raw.githubusercontent.com/LeaderOnePro/GitTok/master/screenshot.png">
+
     <link rel="stylesheet" href="style.css">
     <!-- Favicon -->
     <link rel="icon" href="logo.png" type="image/png">
@@ -16,6 +32,10 @@
         <button type="button" data-since="weekly" class="time-range-btn">本周</button>
         <button type="button" data-since="monthly" class="time-range-btn">本月</button>
     </div>
+
+    <!-- 滚动进度指示（当前项 / 总数），由 script.js 更新 -->
+    <div class="scroll-progress" aria-hidden="true"></div>
+
     <div class="gittok-feed">
         <!-- GitHub Trending 项目将在这里动态加载 -->
         <div class="gittok-item">
