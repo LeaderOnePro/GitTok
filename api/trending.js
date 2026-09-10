@@ -80,13 +80,13 @@ async function handler(req, res) {
             const forks = forksText ? parseInt(forksText, 10) : 0;
 
 
-            const todayStarsElement = repoElement.find('span.d-inline-block.float-sm-right');
-            const todayStarsText = todayStarsElement.text().trim();
+            const periodStarsElement = repoElement.find('span.d-inline-block.float-sm-right');
+            const periodStarsText = periodStarsElement.text().trim();
             // GitHub shows "N stars today" (daily), "N stars this week" (weekly),
             // "N stars this month" (monthly) — match all three so the count is right
             // for whichever period view the trending page was fetched for.
-            const todayStarsMatch = todayStarsText.match(/([\d,]+)\s+stars (?:today|this week|this month)/);
-            const currentPeriodStars = todayStarsMatch ? parseInt(todayStarsMatch[1].replace(/,/g, ''), 10) : 0;
+            const periodStarsMatch = periodStarsText.match(/([\d,]+)\s+stars (?:today|this week|this month)/);
+            const currentPeriodStars = periodStarsMatch ? parseInt(periodStarsMatch[1].replace(/,/g, ''), 10) : 0;
 
             repos.push({
                 author: author,

@@ -194,7 +194,7 @@ html, body {
     border: 1px solid rgba(255, 255, 255, 0.25);
 }
 
-.today-info-container {
+.period-info-container {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -202,7 +202,7 @@ html, body {
     gap: 8px;
 }
 
-.today-stars {
+.period-stars {
     margin: 0;
     font-size: 0.95em;
     font-weight: bold;

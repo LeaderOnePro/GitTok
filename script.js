@@ -77,8 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h2>${esc(repo.name)}</h2>
                 <p class="info-author">作者: ${esc(repo.author)}</p>
                 <p class="info-stats">${stats}</p>
-                <div class="today-info-container">
-                    <span class="today-stars">${periodLabel} Star: ${formatCount(repo.currentPeriodStars)}</span>
+                <div class="period-info-container">
+                    <span class="period-stars">${periodLabel} Star: ${formatCount(repo.currentPeriodStars)}</span>
                     <button type="button" class="deepwiki-btn" data-action="deepwiki" title="在 DeepWiki 中打开">
                         <img src="deepwiki.png" alt=""> DeepWiki
                     </button>
