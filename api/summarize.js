@@ -18,12 +18,18 @@ const allowCors = fn => async (req, res) => {
 };
 
 // --- Helper to fetch README ---
+// Fast path: raw README.md on the two most common default branches (no rate limit).
+// Fallback: the GitHub API `repos/{owner}/{repo}/readme` endpoint auto-resolves the real
+// default branch and the actual readme file (README.md, README.rst, ...), so repos on
+// unusual branches (e.g. vercel/next.js -> canary) or non-.md readmes still work.
+// Auth: uses GITHUB_TOKEN / GH_TOKEN when present (5000 req/h); unauthenticated is capped
+// at 60 req/h per IP — the fallback only fires for the minority of repos the fast path
+// misses, so it is safe on shared Vercel egress IPs.
 async function fetchReadmeContent(author, repo) {
     const branches = ['main', 'master']; // Common default branches
     for (const branch of branches) {
         const url = `https://raw.githubusercontent.com/${author}/${repo}/${branch}/README.md`;
         try {
-            console.log(`Attempting to fetch README from: ${url}`);
             const response = await fetch(url);
             if (response.ok) {
                 console.log(`Successfully fetched README from branch: ${branch}`);
@@ -34,12 +40,32 @@ async function fetchReadmeContent(author, repo) {
                 console.warn(`Failed to fetch README from ${url} with status: ${response.status}`);
             }
         } catch (error) {
-            console.error(`Error fetching README from ${url}:`, error);
-            // Continue to next branch on fetch error
+            console.error(`Error fetching README from ${url}:`, error.message);
         }
     }
-    console.log(`Could not find README.md for ${author}/${repo} on branches: ${branches.join(', ')}`);
-    return null; // README not found on common branches
+
+    // Fallback: GitHub API readme endpoint (auto-detects branch + filename).
+    const apiUrl = `https://api.github.com/repos/${author}/${repo}/readme`;
+    const headers = {
+        'User-Agent': 'GitTok',
+        'Accept': 'application/vnd.github.raw+json',
+    };
+    const ghToken = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
+    if (ghToken) headers['Authorization'] = `Bearer ${ghToken}`;
+    try {
+        console.log(`Fast path missed; trying GitHub API readme fallback: ${apiUrl}`);
+        const response = await fetch(apiUrl, { headers });
+        if (response.ok) {
+            const text = (await response.text()).trim();
+            console.log(`Fetched README via GitHub API (${text.length} chars).`);
+            return text.length > 0 ? text : null;
+        }
+        console.warn(`GitHub API readme fallback for ${author}/${repo} returned ${response.status}`);
+    } catch (error) {
+        console.error(`Error fetching README via GitHub API for ${author}/${repo}:`, error.message);
+    }
+    console.log(`Could not find README for ${author}/${repo}.`);
+    return null;
 }
 
 // --- OrcaRouter config (OpenAI-compatible gateway) ---
