@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
             : '';
         const langPart = repo.language ? `语言: ${langDot}${esc(repo.language)} | ` : '';
         const stats = `${langPart}⭐ ${formatCount(repo.stars)} | Forks: ${formatCount(repo.forks)}`;
+        const periodLabel = currentSince === 'weekly' ? '本周' : currentSince === 'monthly' ? '本月' : '今日';
 
         return `
             <div class="blurred-background" style="${bg}"></div>
@@ -77,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p class="info-author">作者: ${esc(repo.author)}</p>
                 <p class="info-stats">${stats}</p>
                 <div class="today-info-container">
-                    <span class="today-stars">今日 Star: ${formatCount(repo.currentPeriodStars)}</span>
+                    <span class="today-stars">${periodLabel} Star: ${formatCount(repo.currentPeriodStars)}</span>
                     <button type="button" class="deepwiki-btn" data-action="deepwiki" title="在 DeepWiki 中打开">
                         <img src="deepwiki.png" alt=""> DeepWiki
                     </button>

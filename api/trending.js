@@ -82,7 +82,10 @@ async function handler(req, res) {
 
             const todayStarsElement = repoElement.find('span.d-inline-block.float-sm-right');
             const todayStarsText = todayStarsElement.text().trim();
-            const todayStarsMatch = todayStarsText.match(/([\d,]+)\s+stars today/);
+            // GitHub shows "N stars today" (daily), "N stars this week" (weekly),
+            // "N stars this month" (monthly) — match all three so the count is right
+            // for whichever period view the trending page was fetched for.
+            const todayStarsMatch = todayStarsText.match(/([\d,]+)\s+stars (?:today|this week|this month)/);
             const currentPeriodStars = todayStarsMatch ? parseInt(todayStarsMatch[1].replace(/,/g, ''), 10) : 0;
 
             repos.push({
