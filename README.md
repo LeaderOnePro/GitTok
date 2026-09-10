@@ -31,7 +31,7 @@ GitTok 提供了一种全新的、沉浸式的方式来浏览 GitHub 上的热�
 *   **AI 服务**: OrcaRouter (OpenAI 兼容网关)
 *   **数据源**: GitHub Trending 页面, GitHub README 文件. 调用模型：OrcaRouter（默认 `orcarouter/free`，可用 `SUMMARY_MODEL` 环境变量覆盖）
 *   **部署平台**: Vercel
-*   **环境变量**: `ORCAROUTER_API_KEY`（必填）、`SUMMARY_MODEL`（可选，覆盖默认模型 `orcarouter/free`）、`GITHUB_TOKEN`（可选，提高 README 抓取回退到 GitHub API 时的限流配额；未配置时走匿名 60 次/小时）
+*   **环境变量**: `ORCAROUTER_API_KEY`（必填）、`SUMMARY_MODEL`（可选，覆盖默认模型 `orcarouter/free`）、`GITHUB_TOKEN` / `GH_TOKEN`（可选，提高 README 抓取回退到 GitHub API 时的限流配额；未配置时走匿名 60 次/小时）
 
 ## 🚀 如何运行
 

@@ -45,10 +45,12 @@ async function fetchReadmeContent(author, repo) {
     }
 
     // Fallback: GitHub API readme endpoint (auto-detects branch + filename).
+    // Use the documented raw media type; defensively decode a JSON response too,
+    // in case the media type is ever not honoured (base64 content field).
     const apiUrl = `https://api.github.com/repos/${author}/${repo}/readme`;
     const headers = {
         'User-Agent': 'GitTok',
-        'Accept': 'application/vnd.github.raw+json',
+        'Accept': 'application/vnd.github.v3.raw',
     };
     const ghToken = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
     if (ghToken) headers['Authorization'] = `Bearer ${ghToken}`;
@@ -56,7 +58,16 @@ async function fetchReadmeContent(author, repo) {
         console.log(`Fast path missed; trying GitHub API readme fallback: ${apiUrl}`);
         const response = await fetch(apiUrl, { headers });
         if (response.ok) {
-            const text = (await response.text()).trim();
+            const body = await response.text();
+            const contentType = (response.headers.get('content-type') || '').toLowerCase();
+            let text;
+            if (contentType.includes('application/json')) {
+                const json = JSON.parse(body);
+                text = Buffer.from(json.content || '', json.encoding || 'base64').toString('utf8');
+            } else {
+                text = body; // raw media type honoured
+            }
+            text = text.trim();
             console.log(`Fetched README via GitHub API (${text.length} chars).`);
             return text.length > 0 ? text : null;
         }
