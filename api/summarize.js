@@ -95,7 +95,9 @@ async function getAiSummary(readmeContent) {
             // OrcaRouter / OpenAI-compatible error: { error: { message, code, type } }
             const errMsg = data?.error?.message || data?.error?.code || `HTTP ${response.status}`;
             console.error(`OrcaRouter error (HTTP ${response.status}):`, errMsg);
-            return { ok: false, summary: `Summary service error: ${errMsg}` };
+            // Upstream failure -> surface as 502 Bad Gateway (our server->OrcaRouter link is broken,
+            // not a client error). The specific reason stays in `summary`.
+            return { ok: false, summary: `Summary service error: ${errMsg}`, status: 502 };
         }
         let summary = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content ? data.choices[0].message.content.trim() : null;
         
@@ -113,7 +115,8 @@ async function getAiSummary(readmeContent) {
         return { ok: false, summary: "Failed to generate summary or summary was empty." };
     } catch (error) {
         console.error("Error calling OrcaRouter API:", error);
-        return { ok: false, summary: `Error generating summary: ${error.message}` };
+        // Network/exception while calling upstream -> 502 Bad Gateway.
+        return { ok: false, summary: `Error generating summary: ${error.message}`, status: 502 };
     }
 }
 
@@ -129,7 +132,7 @@ async function handler(req, res) {
 
     try {
         const readmeContent = await fetchReadmeContent(author, repo);
-        const { ok, summary } = await getAiSummary(readmeContent);
+        const { ok, summary, status } = await getAiSummary(readmeContent);
 
         // 只缓存成功的总结：让 Vercel CDN 按 URL(?author&repo) 缓存响应，跨实例/用户共享、抗冷启动。
         // 边缘缓存 1 天，之后 7 天内可先返回旧结果再后台刷新；上游出错时也继续用旧结果。
@@ -140,7 +143,10 @@ async function handler(req, res) {
             res.setHeader('Cache-Control', 'no-store');
         }
 
-        res.status(200).json({ ok, summary });
+        // 200 on success and on "logical" failures (empty README / no key / empty summary);
+        // 502 when the upstream OrcaRouter call itself failed.
+        const httpStatus = ok ? 200 : (status || 200);
+        res.status(httpStatus).json({ ok, summary });
 
     } catch (error) {
         console.error(`Error processing summary request for ${author}/${repo}:`, error);

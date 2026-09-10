@@ -258,15 +258,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(summarizeApiUrl);
             itemElement.classList.remove('summary-loading');
 
-            if (!response.ok) throw new Error(`API Error: ${response.status}`);
-            const data = await response.json();
+            // API returns { ok, summary }; on upstream failure it responds 502 with the same shape.
+            // Read the body on both paths so we keep the specific error reason.
+            let data = {};
+            try { data = await response.json(); } catch (_) { /* non-JSON body */ }
 
-            // API now returns { ok, summary } — trust the boolean, not string matching.
-            if (data.ok && data.summary) {
+            if (response.ok && data.ok && data.summary) {
                 summaryPlaceholder.innerHTML = `<p><strong>AI 总结:</strong> ${esc(data.summary)}</p>`;
                 itemElement.classList.add('summary-loaded');
             } else {
-                summaryPlaceholder.innerHTML = `<p><i>未能生成 AI 总结。 (${esc(data.summary || '原因未知')})</i></p>`;
+                const reason = (data && data.summary) || `HTTP ${response.status}`;
+                summaryPlaceholder.innerHTML = `<p><i>未能生成 AI 总结。 (${esc(reason)})</i></p>`;
             }
         } catch (error) {
             console.error(`获取 AI 总结失败 (${author}/${repo}):`, error);
