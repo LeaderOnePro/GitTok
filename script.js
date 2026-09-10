@@ -261,12 +261,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) throw new Error(`API Error: ${response.status}`);
             const data = await response.json();
 
-            const failures = [
-                'Failed to generate summary or summary was empty.',
-                'README is empty or could not be fetched.',
-                'LongCat API key not configured.'
-            ];
-            if (data.summary && !failures.includes(data.summary)) {
+            // API now returns { ok, summary } — trust the boolean, not string matching.
+            if (data.ok && data.summary) {
                 summaryPlaceholder.innerHTML = `<p><strong>AI 总结:</strong> ${esc(data.summary)}</p>`;
                 itemElement.classList.add('summary-loaded');
             } else {
