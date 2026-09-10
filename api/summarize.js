@@ -43,10 +43,10 @@ async function fetchReadmeContent(author, repo) {
 }
 
 // --- OrcaRouter config (OpenAI-compatible gateway) ---
-// Docs: https://docs.orcarouter.ai — model naming: provider/model or orcarouter/auto.
+// Docs: https://docs.orcarouter.ai — model naming: provider/model or orcarouter/free.
 // Override the model at runtime via the SUMMARY_MODEL env var (no redeploy needed).
 const ORCAROUTER_BASE = 'https://api.orcarouter.ai/v1';
-const SUMMARY_MODEL = process.env.SUMMARY_MODEL || 'orcarouter/auto';
+const SUMMARY_MODEL = process.env.SUMMARY_MODEL || 'orcarouter/free';
 
 // --- Helper to get AI Summary using OrcaRouter ---
 async function getAiSummary(readmeContent) {
