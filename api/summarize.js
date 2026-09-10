@@ -42,13 +42,19 @@ async function fetchReadmeContent(author, repo) {
     return null; // README not found on common branches
 }
 
-// --- Helper to get AI Summary using LongCat ---
+// --- OrcaRouter config (OpenAI-compatible gateway) ---
+// Docs: https://docs.orcarouter.ai — model naming: provider/model or orcarouter/free.
+// Override the model at runtime via the SUMMARY_MODEL env var (no redeploy needed).
+const ORCAROUTER_BASE = 'https://api.orcarouter.ai/v1';
+const SUMMARY_MODEL = process.env.SUMMARY_MODEL || 'orcarouter/free';
+
+// --- Helper to get AI Summary using OrcaRouter ---
 async function getAiSummary(readmeContent) {
     if (!readmeContent || readmeContent.trim() === '') {
         return { ok: false, summary: "README is empty or could not be fetched." };
     }
-    if (!process.env.LONGCAT_API_KEY) { // Use LongCat API Key
-        return { ok: false, summary: "LongCat API key not configured." };
+    if (!process.env.ORCAROUTER_API_KEY) { // OrcaRouter API key (sk-orca-...)
+        return { ok: false, summary: "OrcaRouter API key not configured." };
     }
 
     // Simple truncation to avoid overly long prompts (adjust length as needed)
@@ -60,14 +66,15 @@ async function getAiSummary(readmeContent) {
     const prompt = `请根据以下 GitHub 项目的 README 内容，用简体中文提供一个简洁的一句话总结:\n\n---\n\n${truncatedContent}\n\n---\n\n中文总结:`;
 
     try {
-        console.log(`Requesting summary from LongCat for README (length: ${truncatedContent.length})...`);
-        const response = await fetch('https://api.longcat.chat/openai/v1/chat/completions', { // LongCat API endpoint
+        console.log(`Requesting summary from OrcaRouter (${SUMMARY_MODEL}) for README (length: ${truncatedContent.length})...`);
+        const response = await fetch(`${ORCAROUTER_BASE}/chat/completions`, { // OrcaRouter endpoint
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${process.env.LONGCAT_API_KEY}` // Use LongCat API Key
+                'Authorization': `Bearer ${process.env.ORCAROUTER_API_KEY}`
             },
             body: JSON.stringify({
+                model: SUMMARY_MODEL,
                 messages: [
                     {
                         role: "system",
@@ -78,15 +85,18 @@ async function getAiSummary(readmeContent) {
                         content: prompt
                     }
                 ],
-                model: "LongCat-2.0", // 主模型
                 stream: false,
                 temperature: 0.5
             })
         });
 
-        const data = await response.json();
-        // LongCat API might have a slightly different response structure for errors or empty content.
-        // Adjust based on actual API response if needed.
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+            // OrcaRouter / OpenAI-compatible error: { error: { message, code, type } }
+            const errMsg = data?.error?.message || data?.error?.code || `HTTP ${response.status}`;
+            console.error(`OrcaRouter error (HTTP ${response.status}):`, errMsg);
+            return { ok: false, summary: `Summary service error: ${errMsg}` };
+        }
         let summary = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content ? data.choices[0].message.content.trim() : null;
         
         // 过滤 LLM 的 CoT（思考链）内容
@@ -102,7 +112,7 @@ async function getAiSummary(readmeContent) {
         }
         return { ok: false, summary: "Failed to generate summary or summary was empty." };
     } catch (error) {
-        console.error("Error calling LongCat API:", error);
+        console.error("Error calling OrcaRouter API:", error);
         return { ok: false, summary: `Error generating summary: ${error.message}` };
     }
 }
@@ -130,7 +140,7 @@ async function handler(req, res) {
             res.setHeader('Cache-Control', 'no-store');
         }
 
-        res.status(200).json({ summary });
+        res.status(200).json({ ok, summary });
 
     } catch (error) {
         console.error(`Error processing summary request for ${author}/${repo}:`, error);
