@@ -22,7 +22,7 @@
 - **前端**：HTML / CSS / JavaScript，无框架；卡片渲染、懒加载观察器、键盘导航与分享。
 - **后端**：Vercel Serverless Functions（Node 22，内置 `fetch` + `cheerio`）
   - `/api/trending` — 抓取并解析 GitHub Trending 页面；解析为 0 条时返回 502（熔断，页面结构变更可被日志立即发现）；成功响应带 1h CDN 缓存（仅合法 `since`）。
-  - `/api/summarize` — 抓取 README（`raw.githubusercontent.com` 快路径 + GitHub API `readme` 端点回退）→ 调 OrcaRouter 生成中文一句话总结；成功缓存 1 天 + 7 天 stale，上游失败返回 502 并透传具体原因。
+  - `/api/summarize` — 抓取 README（`raw.githubusercontent.com` 快路径 + GitHub API `readme` 端点回退）→ 调 OrcaRouter 生成中文一句话总结；成功缓存 1 天 + 7 天 stale，调用 OrcaRouter 失败返回 502 并透传具体原因（README 抓取失败属于逻辑失败，返回 200 + `ok:false`）。
 - **AI 网关**：[OrcaRouter](https://www.orcarouter.ai)（OpenAI 兼容）。
 - **部署**：[Vercel](https://vercel.com)，静态资源 + `api/` 目录自动识别。
 
@@ -30,8 +30,8 @@
 
 | 变量 | 必填 | 说明 |
 | --- | :-: | --- |
-| `ORCAROUTER_API_KEY` | ✅ | `sk-orca-...`，未配置时 AI 总结显示「未配置」。 |
-| `SUMMARY_MODEL` | ❌ | 覆盖默认模型 `orcarouter/free`；改 Vercel 环境变量即可生效，无需发版。 |
+| `ORCAROUTER_API_KEY` | ✅ | `sk-orca-...`。未配置时该功能不可用，AI 总结位置会提示「未能生成 AI 总结」。 |
+| `SUMMARY_MODEL` | ❌ | 覆盖默认模型 `orcarouter/free`；在 Vercel 修改环境变量后会触发一次新的部署，随新部署生效。 |
 | `GITHUB_TOKEN` / `GH_TOKEN` | ❌ | README 抓取回退到 GitHub API 时使用；配置后配额 60/h → 5000/h，否则匿名 60/h（回退只触发于快路径 miss 的少数仓库，不配也够用）。 |
 
 ## 🚀 本地运行
