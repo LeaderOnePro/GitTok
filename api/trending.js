@@ -1,5 +1,5 @@
 // api/trending.js - Vercel Serverless Function
-import fetch from 'node-fetch';
+// Uses the global fetch built into Node >= 18 (Vercel runtime is Node 22).
 import * as cheerio from 'cheerio';
 
 // Helper function to handle CORS (needed for Vercel)
