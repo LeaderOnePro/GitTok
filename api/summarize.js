@@ -1,5 +1,5 @@
 // api/summarize.js - Vercel Serverless Function for summarizing a single repo's README
-import fetch from 'node-fetch';
+// Uses the global fetch built into Node >= 18 (Vercel runtime is Node 22).
 
 // --- CORS Helper ---
 const allowCors = fn => async (req, res) => {
