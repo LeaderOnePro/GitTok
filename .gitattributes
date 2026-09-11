@@ -3,7 +3,7 @@
 # Static assets: no line-ending munging
 *.png  binary
 *.jpg  binary
-*.svg  binary
+*.svg  text eol=lf
 *.woff binary
 *.woff2 binary
 *.ttf  binary
