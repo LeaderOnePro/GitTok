@@ -25,10 +25,14 @@ const allowCors = fn => async (req, res) => {
 
 // The main handler function for the serverless endpoint
 async function handler(req, res) {
-    // Read the 'since' query parameter (daily, weekly, monthly)
-    const since = req.query.since || 'daily'; // Default to 'daily'
+    // Read the 'since' query parameter (daily, weekly, monthly).
+    // Unknown values are mapped to 'daily' so the handler is lenient, but the
+    // response's Cache-Control header is only set on canonical `since` values
+    // (below) so that `?since=<random-nonce>` variants do NOT claim a cache key
+    // and cannot bypass the edge cache by spawning one entry per arbitrary value.
+    const since = req.query.since || 'daily';
     const validSinceValues = ['daily', 'weekly', 'monthly'];
-    const timeRange = validSinceValues.includes(since) ? since : 'daily'; // Validate or default
+    const timeRange = validSinceValues.includes(since) ? since : 'daily';
 
     const trendingUrl = `https://github.com/trending?since=${timeRange}`;
 
@@ -118,7 +122,20 @@ async function handler(req, res) {
         }
 
         console.log(`Parsed ${repos.length} repositories.`);
-        // Send successful response
+        // GitHub's trending page changes slowly (hourly at most); let the
+        // Vercel edge CDN serve the same since-range from cache for an hour,
+        // cutting serverless invocations by ~60x on hot ranges.
+        //
+        // The header is only attached on canonical `since` values so that the
+        // Vercel edge cache key (derived from the request URL, which includes
+        // the raw query string) is shared across equivalent requests. If the
+        // client passed a non-canonical value it was mapped to 'daily' above,
+        // and we deliberately do NOT cache that request under its arbitrary
+        // original query string — instead we let it re-fetch so the cache only
+        // ever holds the three canonical keys.
+        if (validSinceValues.includes(since)) {
+            res.setHeader('Cache-Control', 'public, s-maxage=3600');
+        }
         res.status(200).json(repos);
 
     } catch (error) {

@@ -1,2 +1,16 @@
-# Auto detect text files and perform LF normalization
 * text=auto
+
+# Static assets: no line-ending munging
+*.png  binary
+*.jpg  binary
+*.svg  text eol=lf
+*.woff binary
+*.woff2 binary
+*.ttf  binary
+*.mp4  binary
+*.mp3  binary
+
+# Lockfile / minified: LF only, no diff noise
+package-lock.json text eol=lf
+*.min.js    text eol=lf
+*.min.css   text eol=lf
