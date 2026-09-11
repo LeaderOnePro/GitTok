@@ -102,6 +102,21 @@ async function handler(req, res) {
             });
         });
 
+        // Circuit breaker: 0 parsed repos usually means GitHub changed the
+        // page structure the CSS selectors depend on (or a rate-limited /
+        // bot-blocked empty page). Fail loudly with 502 + a reason instead of
+        // silently returning an empty feed — so the failure is visible in
+        // logs/monitoring the moment it happens, not days later when a user
+        // wonders why the feed is empty.
+        if (repos.length === 0) {
+            console.error('Parsed 0 repositories — GitHub trending HTML structure may have changed (cheerio selectors: article.Box-row, etc.).');
+            res.status(502).json({
+                error: 'GitHub Trending returned no parsable data. The page structure may have changed — check the GitHub side, not your network.',
+                details: `fetched ${trendingUrl}, 0 repos parsed`,
+            });
+            return;
+        }
+
         console.log(`Parsed ${repos.length} repositories.`);
         // Send successful response
         res.status(200).json(repos);
