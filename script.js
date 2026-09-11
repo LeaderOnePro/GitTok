@@ -188,7 +188,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             const response = await fetch(`${baseApiUrl}?since=${since}`, { signal });
-            if (!response.ok) throw new Error(`HTTP 错误! 状态: ${response.status}`);
+            if (!response.ok) {
+                // Keep the server's specific reason when it provides one (e.g. 502
+                // "page structure changed"), otherwise fall back to the status code.
+                let detail = `状态: ${response.status}`;
+                try {
+                    const errBody = await response.json();
+                    if (errBody && (errBody.error || errBody.details)) {
+                        detail = errBody.error || errBody.details;
+                    }
+                } catch (_) { /* non-JSON body */ }
+                throw new Error(detail);
+            }
             const repos = await response.json();
             if (signal.aborted) return;         // superseded by a newer request
             trendingCache.set(since, repos);
