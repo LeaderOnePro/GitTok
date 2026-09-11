@@ -118,7 +118,10 @@ async function handler(req, res) {
         }
 
         console.log(`Parsed ${repos.length} repositories.`);
-        // Send successful response
+        // GitHub's trending page changes slowly (hourly at most); let the
+        // Vercel edge CDN serve the same since-range from cache for an hour,
+        // cutting serverless invocations by ~60x on hot ranges.
+        res.setHeader('Cache-Control', 'public, s-maxage=3600');
         res.status(200).json(repos);
 
     } catch (error) {
