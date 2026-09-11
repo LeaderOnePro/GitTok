@@ -26,8 +26,8 @@ GitTok 提供了一种全新的、沉浸式的方式来浏览 GitHub 上的热�
 
 *   **前端**: HTML, CSS, JavaScript (无框架)
 *   **后端 API**: Vercel Serverless Functions (Node.js runtime)
-    *   `/api/trending`: 获取 Trending 列表 (使用 `node-fetch`, `cheerio`)
-    *   `/api/summarize`: 获取单个仓库的 AI 总结 (使用 `node-fetch`, OrcaRouter API)。
+    *   `/api/trending`: 获取 Trending 列表 (使用内置 `fetch`, `cheerio`)
+    *   `/api/summarize`: 获取单个仓库的 AI 总结 (使用内置 `fetch`, OrcaRouter API)
 *   **AI 服务**: OrcaRouter (OpenAI 兼容网关)
 *   **数据源**: GitHub Trending 页面, GitHub README 文件. 调用模型：OrcaRouter（默认 `orcarouter/free`，可用 `SUMMARY_MODEL` 环境变量覆盖）
 *   **部署平台**: Vercel
