@@ -4,78 +4,60 @@
 
 **像刷 TikTok 一样浏览 GitHub Trending！**
 
-GitTok 提供了一种全新的、沉浸式的方式来浏览 GitHub 上的热门项目。厌倦了传统的列表视图？试试 GitTok，享受全屏、自动播放（未来功能）的 GitHub Trending 体验！
+全屏、沉浸式地浏览 GitHub 热门项目：每张卡片聚焦一个仓库，配 AI 中文一句话总结、语言、Star/Fork 与周期增星数。垂直滚动切换，键盘 ↑/↓ / j / k 也能翻。
 
 ![GitTok Screenshot](screenshot.png)
 
 ## ✨ 特性
 
-*   **TikTok 风格界面**: 全屏、垂直滚动浏览 GitHub Trending 项目。
-*   **沉浸式体验**: 每个项目卡片都包含关键信息和作者头像背景。
-*   **毛玻璃效果**: 现代化的视觉效果，突出项目信息。
-*   **分享功能**: 轻松将 GitTok 项目分享给朋友或同事。
-*   **自定义 Logo**: 使用独特的项目 Logo 作为网站图标，提升品牌识别度。
-*   **Serverless API**: 使用 Vercel Serverless Functions 稳定可靠地获取 GitHub Trending 数据。
-*   **AI 总结**: 利用 AI (OrcaRouter) 对项目 README 进行中文总结，快速了解项目核心 (懒加载)。
-*   **时间范围选择**: 支持查看今日、本周和本月的 GitHub Trending 数据。
-*   **加载动画**: 使用 Octocat 图标和模糊背景提供更友好的加载体验。
-*   **DeepWiki 集成**: 在每个项目卡片上添加 DeepWiki 按钮，点击可直接跳转到该项目在 DeepWiki 上的页面。
-*   **Zread 集成**: 在每个项目卡片上添加 Zread 按钮，点击可直接跳转到该项目在 Zread 上的页面进行深度分析。
+- **TikTok 风格全屏卡片**：垂直滚动浏览，每个仓库一张卡片，作者头像作为模糊背景。
+- **AI 中文总结**：基于仓库 README 的一句话总结，懒加载 + 边缘缓存，快速了解项目核心。
+- **时间范围**：今日 / 本周 / 本月 Trending，周期 Star 数随之切换。
+- **分享**：Web Share API（不支持时回退到复制链接）。
+- **键盘导航**：↑/↓ 或 j/k 翻页，滚动进度指示。
+- **DeepWiki / Zread 集成**：卡片上直达该仓库的 AI 文档与深度分析。
 
 ## 🛠️ 技术栈
 
-*   **前端**: HTML, CSS, JavaScript (无框架)
-*   **后端 API**: Vercel Serverless Functions (Node.js runtime)
-    *   `/api/trending`: 获取 Trending 列表 (使用内置 `fetch`, `cheerio`)
-    *   `/api/summarize`: 获取单个仓库的 AI 总结 (使用内置 `fetch`, OrcaRouter API)
-*   **AI 服务**: OrcaRouter (OpenAI 兼容网关)
-*   **数据源**: GitHub Trending 页面, GitHub README 文件. 调用模型：OrcaRouter（默认 `orcarouter/free`，可用 `SUMMARY_MODEL` 环境变量覆盖）
-*   **部署平台**: Vercel
-*   **环境变量**: `ORCAROUTER_API_KEY`（必填）、`SUMMARY_MODEL`（可选，覆盖默认模型 `orcarouter/free`）、`GITHUB_TOKEN` / `GH_TOKEN`（可选，提高 README 抓取回退到 GitHub API 时的限流配额；未配置时走匿名 60 次/小时）
+- **前端**：HTML / CSS / JavaScript，无框架；卡片渲染、懒加载观察器、键盘导航与分享。
+- **后端**：Vercel Serverless Functions（Node 22，内置 `fetch` + `cheerio`）
+  - `/api/trending` — 抓取并解析 GitHub Trending 页面；解析为 0 条时返回 502（熔断，页面结构变更可被日志立即发现）；成功响应带 1h CDN 缓存（仅合法 `since`）。
+  - `/api/summarize` — 抓取 README（`raw.githubusercontent.com` 快路径 + GitHub API `readme` 端点回退）→ 调 OrcaRouter 生成中文一句话总结；成功缓存 1 天 + 7 天 stale，调用 OrcaRouter 失败返回 502 并透传具体原因（README 抓取失败属于逻辑失败，返回 200 + `ok:false`）。
+- **AI 网关**：[OrcaRouter](https://www.orcarouter.ai)（OpenAI 兼容）。
+- **部署**：[Vercel](https://vercel.com)，静态资源 + `api/` 目录自动识别。
 
-## 🚀 如何运行
+## 🔧 环境变量
 
-1.  **克隆仓库**:
-    ```bash
-    git clone https://github.com/LeaderOnePro/GitTok.git
-    cd GitTok
-    ```
+| 变量 | 必填 | 说明 |
+| --- | :-: | --- |
+| `ORCAROUTER_API_KEY` | ✅ | `sk-orca-...`。未配置时该功能不可用，AI 总结位置会提示「未能生成 AI 总结」。 |
+| `SUMMARY_MODEL` | ❌ | 覆盖默认模型 `orcarouter/free`；在 Vercel 修改环境变量后会触发一次新的部署，随新部署生效。 |
+| `GITHUB_TOKEN` / `GH_TOKEN` | ❌ | README 抓取回退到 GitHub API 时使用；配置后配额 60/h → 5000/h，否则匿名 60/h（回退只触发于快路径 miss 的少数仓库，不配也够用）。 |
 
-2.  **安装依赖**:
-    Vercel 会在部署时自动安装根 `package.json` 中的依赖。如果想在本地运行或测试 Serverless Function，可以使用 Vercel CLI:
-    ```bash
-    npm install -g vercel # 安装 Vercel CLI (如果尚未安装)
-    npm install           # 安装项目依赖
-    vercel dev            # 启动本地开发服务器 (会运行前端和 Serverless Function)
-    ```
-    然后访问 `http://localhost:3000` (或 Vercel CLI 指定的其他端口)。
+## 🚀 本地运行
 
-3.  **直接打开前端 (无本地 API)**:
-    如果只想查看前端界面（不调用 API），可以直接在浏览器中打开项目根目录下的 `index.html` 文件。
+```bash
+git clone https://github.com/LeaderOnePro/GitTok.git
+cd GitTok
+npm install -g vercel   # 仅本地开发需要
+npm install
+vercel dev              # 前端 + Serverless Functions
+```
 
-## 部署
+访问 `http://localhost:3000`。
 
-本项目已配置为可以轻松部署到 [Vercel](https://vercel.com/)。
+> 只想看前端界面（不跑 API）时，直接打开根目录 `index.html` 即可。
 
-1.  确保你的代码已推送到 GitHub 仓库。
-2.  在 Vercel 上导入你的 GitHub 仓库。
-3.  Vercel 会自动识别项目结构（静态文件 + `api` 目录下的 Serverless Functions）并进行部署。
-4.  部署完成后，你将获得一个公开的 URL。
+## 📦 部署
 
-## 📝 未来计划
-
-*   [ ] **筛选器**: 按语言、日期范围等筛选 Trending 项目。
-*   [ ] **用户偏好设置**: 保存用户喜欢的语言或主题。
-*   [ ] **更丰富的项目信息**: 尝试提取贡献者、更详细的活动数据等。
-*   [x] **部署**: 已使用 Vercel 部署。
-*   [ ] **PWA 支持**: 使其成为可安装的渐进式 Web 应用。
-*   [x] **自定义 Logo**: 替换默认的浏览器图标，提升品牌识别度。
-*   [x] **缓存 AI 总结**: 提高性能并减少 API 调用。
+1. 代码推送到 GitHub。
+2. 在 Vercel 导入该仓库，静态资源与 `api/` 会被自动识别并部署。
+3. 在 Vercel 项目环境变量中配置上表中的 `ORCAROUTER_API_KEY`（以及可选的 `SUMMARY_MODEL`、`GITHUB_TOKEN`）。
 
 ## 🤝 贡献
 
-欢迎各种形式的贡献！如果你有任何想法、建议或发现 Bug，请随时提出 Issue 或提交 Pull Request。
+欢迎提 Issue 或 Pull Request：想法、建议、Bug 都可以。
 
 ## 📄 许可证
 
-本项目采用 [MIT 许可证](LICENSE)。
+[MIT](LICENSE)。
