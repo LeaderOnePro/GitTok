@@ -1,22 +1,6 @@
 // api/summarize.js - Vercel Serverless Function for summarizing a single repo's README
 // Uses the global fetch built into Node >= 18 (Vercel runtime is Node 22).
 
-// --- CORS Helper ---
-const allowCors = fn => async (req, res) => {
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader('Access-Control-Allow-Origin', '*'); // Adjust in production
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
-    res.setHeader(
-        'Access-Control-Allow-Headers',
-        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-    );
-    if (req.method === 'OPTIONS') {
-        res.status(200).end();
-        return;
-    }
-    return await fn(req, res);
-};
-
 // --- Helper to fetch README ---
 // Fast path: raw README.md on the two most common default branches (no rate limit).
 // Fallback: the GitHub API `repos/{owner}/{repo}/readme` endpoint auto-resolves the real
@@ -191,4 +175,8 @@ async function handler(req, res) {
     }
 }
 
-export default allowCors(handler);
+// No CORS headers on purpose: the frontend calls this endpoint via a same-origin
+// relative path (script.js), which browsers allow by default. Keeping the surface
+// closed stops third-party web pages from scripting this AI-costing endpoint
+// through their visitors.
+export default handler;
