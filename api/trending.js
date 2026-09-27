@@ -2,27 +2,6 @@
 // Uses the global fetch built into Node >= 18 (Vercel runtime is Node 22).
 import * as cheerio from 'cheerio';
 
-// Helper function to handle CORS (needed for Vercel)
-const allowCors = fn => async (req, res) => {
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    // Allow requests from any origin. For production, you might want to restrict this
-    // to your frontend's domain (e.g., your-gittok-url.vercel.app)
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS');
-    res.setHeader(
-        'Access-Control-Allow-Headers',
-        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-    );
-
-    // Handle OPTIONS request (pre-flight) for CORS
-    if (req.method === 'OPTIONS') {
-        res.status(200).end();
-        return;
-    }
-    // Call the actual handler
-    return await fn(req, res);
-};
-
 // The main handler function for the serverless endpoint
 async function handler(req, res) {
     // Read the 'since' query parameter (daily, weekly, monthly).
@@ -145,5 +124,7 @@ async function handler(req, res) {
     }
 }
 
-// Export the handler wrapped with the CORS helper
-export default allowCors(handler);
+// No CORS headers on purpose: the frontend calls these endpoints via same-origin
+// relative paths (script.js), which browsers allow by default. Keeping the surface
+// closed stops third-party web pages from scripting this API through their visitors.
+export default handler;
